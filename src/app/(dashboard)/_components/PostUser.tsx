@@ -9,7 +9,7 @@ const fetchUser = async (userId: string) => {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/api/users/user/${userId}`, {
+    const res = await fetch(`${process.env.API_URL}/api/users/user/${userId}`, {
       method: "GET",
       cache: "no-cache", // Ensure fresh data on each request
     });

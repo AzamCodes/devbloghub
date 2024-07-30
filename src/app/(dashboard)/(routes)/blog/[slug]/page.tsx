@@ -24,10 +24,13 @@ const PostContent: React.FC<PostContentProps> = ({ content }) => {
 const fetchPost = async (slug: string) => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-    const res = await fetch(`http://localhost:3000/api/blog/${slug}`, {
-      method: "GET",
-      cache: "no-cache",
-    });
+    const res = await fetch(
+      `${process.env.API_URL}/api/blog/${slug}`,
+      {
+        method: "GET",
+        cache: "no-cache",
+      }
+    );
     if (!res.ok) {
       throw new Error("Failed to fetch post");
     }

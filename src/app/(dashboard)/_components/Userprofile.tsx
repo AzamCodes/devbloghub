@@ -3,7 +3,7 @@ import React from "react";
 
 const fetchUser = async (username: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/users/${username}`, {
+    const res = await fetch(`${process.env.API_URL}/api/users/${username}`, {
       method: "GET",
       cache: "no-cache", // Ensure fresh data on each request
     });
