@@ -45,11 +45,7 @@ export const POST = async (req: NextRequest) => {
       authorImg: user.img,
     };
 
-    // console.log("Blog Data:", blogData);
-
     const newPost = await Post.create(blogData);
-
-    // console.log("Newly Created Post:", newPost);
 
     return NextResponse.json({
       imgUrl,
