@@ -45,14 +45,14 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
 
 Click the button below to verify your email <br>
 <a href="${
-              process.env.domain
+              process.env.API_URL
             }/verifyemail?token=${hashedToken}">Verify Email</a> to ${
               emailType === "VERIFY"
                 ? "verify your email"
                 : "reset your password"
             }
             or copy and paste the link below in your browser. <br> ${
-              process.env.domain
+              process.env.API_URL
             }/verifyemail?token=${hashedToken}
             </p>`
           : `<p>We received a request to reset your password for your account on DEVLOCK. <br>If you requested this reset, please follow these steps to create a new password:<br>
@@ -61,7 +61,7 @@ Click the button below to verify your email <br>
 
 
 <a href="${
-              process.env.domain
+              process.env.API_URL
             }/forgotPassword?token=${hashedToken}">RESET PASSWORD</a> to ${
               emailType === "RESET"
                 ? "RESET YOUR PASSWORD"
@@ -71,7 +71,7 @@ Click the button below to verify your email <br>
             If you didn't request a password reset, you can safely ignore this email. For your security, we recommend you don't share this link with anyone.
 To ensure the security of your account, please choose a strong password that is unique to this account and not used for any other online services.<br>This link will expire in 24 hours. If you don't reset your password within 24 hours, you will need to request a new reset link<br>Thanks,<br>
             or copy and paste the link below in your browser. <br> ${
-              process.env.domain
+              process.env.API_URL
             }/forgotPassword?token=${hashedToken}
             </p>`,
     };
