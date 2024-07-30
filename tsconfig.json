@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "target": "ES2018", // Ensure compatibility with newer features
+    "target": "ES2018",
     "plugins": [
       {
         "name": "next"
@@ -27,8 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "tailwind.config.js", // Include Tailwind CSS config
-    "postcss.config.js" // Include PostCSS config if you use it
+    "tailwind.config.js",
+    "postcss.config.js"
   ],
   "exclude": ["node_modules"]
 }
