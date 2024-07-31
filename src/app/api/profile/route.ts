@@ -1,7 +1,7 @@
 // pages/api/profile.js
 import { connect } from "@/dbConfig/dbConfig";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
-import User from "@/models/userModel";
+import User from "@/models/UserModel";
 import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 

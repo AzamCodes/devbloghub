@@ -1,6 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig";
 import { sendEmail } from "@/helpers/mailer";
-import User from "@/models/userModel";
+import User from "@/models/UserModel";
 import { NextRequest, NextResponse } from "next/server";
 
 try {
