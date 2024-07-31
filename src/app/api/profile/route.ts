@@ -2,7 +2,8 @@
 import { connect } from "@/dbConfig/dbConfig";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 import User from "@/models/UserModel";
-import { writeFile } from "fs/promises";
+import cloudinary from "@/utils/cloudinaryConfig"; // Import Cloudinary configuration
+import { Readable } from "stream";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
@@ -23,36 +24,40 @@ export const POST = async (req: NextRequest) => {
     const img = formData.get("img");
     const email = formData.get("email");
 
+    let imgUrl = user.img; // Default to the existing image URL
+
     if (img && img instanceof File) {
-      const imageByteData = await img.arrayBuffer();
-      const buffer = Buffer.from(imageByteData);
-      const timestamp = Date.now();
-      const filename = `${timestamp}_${img.name}`;
-      const path = `./public/userimg/${filename}`;
+      const imageBuffer = Buffer.from(await img.arrayBuffer());
 
-      await writeFile(path, buffer);
-      const userUrl = `/userimg/${filename}`;
+      // Convert the buffer to a readable stream
+      const imageStream = new Readable();
+      imageStream.push(imageBuffer);
+      imageStream.push(null);
 
-      // Update the user document with the image URL and email
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { $set: { img: userUrl, email: email || user.email } }, // Ensure email is updated
-        { new: true }
-      );
+      // Upload image to Cloudinary
+      const cloudinaryResponse = await new Promise<any>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "user_images" }, // Adjust the folder name as needed
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
 
-      return NextResponse.json({ success: true, data: updatedUser });
-    } else if (email) {
-      // If no image, just update the email
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { $set: { email: email } },
-        { new: true }
-      );
+        imageStream.pipe(uploadStream);
+      });
 
-      return NextResponse.json({ success: true, data: updatedUser });
-    } else {
-      throw new Error("No valid data provided");
+      imgUrl = cloudinaryResponse.secure_url;
     }
+
+    // Update the user document with the image URL and email
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { img: imgUrl, email: email || user.email } }, // Ensure email is updated
+      { new: true }
+    );
+
+    return NextResponse.json({ success: true, data: updatedUser });
   } catch (error: any) {
     console.error("Error updating profile:", error);
     return NextResponse.json(

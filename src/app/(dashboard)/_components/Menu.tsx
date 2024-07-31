@@ -39,7 +39,7 @@ const Menu = () => {
         <IoClose size={22} onClick={handleMenuClose} />
       )}
       {open && (
-        <div className="bg-inherit z-50 rounded-xl backdrop-blur-[100px] flex items-center justify-center text-3xl flex-col gap-8 w-full absolute left-0 top-12 h-[calc(100vh-3rem)]">
+        <div className="bg-inherit/75 z-50 rounded-xl backdrop-blur-[450px] md:backdrop-blur-[100px] flex items-center justify-center text-3xl flex-col gap-8 w-full absolute left-0 top-12 h-[calc(100vh-3rem)]">
           {menuItems.map((route) => (
             <NavItem
               key={route.href}

@@ -1,15 +1,13 @@
-import { connect } from "@/dbConfig/dbConfig";
-import { getDataFromToken } from "@/helpers/getDataFromToken";
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import Post from "@/models/PostModel";
-import User from "@/models/UserModel";
-
-connect();
+import cloudinary from "@/utils/cloudinaryConfig"; // Adjust the import path as needed
+import { Readable } from "stream";
+import Post from "@/models/PostModel"; // Import your Post model
+import User from "@/models/UserModel"; // Import your User model
+import { getDataFromToken } from "@/helpers/getDataFromToken"; // Import your token helper
 
 export const POST = async (req: NextRequest) => {
   try {
-    const userId = await getDataFromToken(req);
+    const userId = await getDataFromToken(req); // Assuming this function extracts user ID from the token
     const user = await User.findOne({ _id: userId }).select("-password");
 
     if (!user) {
@@ -17,24 +15,36 @@ export const POST = async (req: NextRequest) => {
     }
 
     const formData = await req.formData();
-    const imge = formData.get("img");
+    const img = formData.get("img");
 
-    if (!imge || typeof imge === "string") {
+    if (!img || typeof img === "string") {
       throw new Error("Image file is required and must be a file");
     }
 
-    const imageByteData = await imge.arrayBuffer();
+    const imageBuffer = Buffer.from(await img.arrayBuffer());
 
-    if (!imageByteData) {
-      throw new Error("Failed to process image data");
-    }
+    // Convert the buffer to a readable stream
+    const imageStream = new Readable();
+    imageStream.push(imageBuffer);
+    imageStream.push(null);
 
-    const buffer = Buffer.from(imageByteData);
-    const timestamp = Date.now();
-    const imagePath = `./public/${timestamp}_${imge.name}`;
-    await writeFile(imagePath, buffer);
-    const imgUrl = `/${timestamp}_${imge.name}`;
+    // Upload image to Cloudinary
+    const cloudinaryResponse = await new Promise<any>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "blog_posts" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
 
+      imageStream.pipe(uploadStream);
+    });
+
+    const imgUrl = cloudinaryResponse.secure_url;
+    // console.log("Cloudinary response:", cloudinaryResponse);
+
+    // Save post details to the database
     const blogData = {
       title: formData.get("title"),
       desc: formData.get("desc"),
@@ -46,7 +56,7 @@ export const POST = async (req: NextRequest) => {
     };
 
     const newPost = await Post.create(blogData);
-
+    // console.log("New post created:", newPost);
     return NextResponse.json({
       imgUrl,
       success: true,
@@ -54,6 +64,7 @@ export const POST = async (req: NextRequest) => {
       post: newPost,
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message });
+    console.error("Error creating post:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 };

@@ -74,7 +74,7 @@
 }
 
 #search-bar {
-  z-index: 10000; /* Ensure it's above other content */
+  z-index: 48; /* Ensure it's above other content */
 }
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {

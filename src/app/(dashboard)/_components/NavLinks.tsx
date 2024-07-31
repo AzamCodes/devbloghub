@@ -3,6 +3,10 @@ import NavItem from "./navitem";
 
 const menuItems = [
   {
+    label: "Home",
+    href: "/",
+  },
+  {
     label: "Blog",
     href: "/blog",
   },

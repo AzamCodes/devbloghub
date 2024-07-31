@@ -58,7 +58,7 @@ const SearchBar = ({ onSearch }: any) => {
   return (
     <form
       id="search-bar"
-      className={`relative w-full mx-auto py-5 px-4 ${
+      className={`relative w-full mx-auto py-3 px-4 ${
         isSticky
           ? "sticky top-0 left-0 shadow-md z-10 transition-all duration-300 ease-in-out backdrop-filter backdrop-blur-md"
           : "static"
@@ -70,19 +70,21 @@ const SearchBar = ({ onSearch }: any) => {
       onSubmit={handleSubmit}
     >
       {isSticky && (
-        <div className="flex text-gray-500  pr-3 md:hidden">
+        <div className="flex text-gray-500 pr-3 md:hidden">
           <Menu />
         </div>
       )}
-      <div className="flex justify-center items-center ml-8 w-full">
+      <div className="flex 2xl:justify-center md:justify-start items-center w-full">
         <div
-          className={`relative ${
-            isSticky ? "flex items-center justify-center" : "w-3/5"
+          className={`relative w-full ${
+            isSticky
+              ? "max-w-xl flex items-center md:flex-1 md:justify-start justify-center"
+              : "lg:max-w-lg lg:ml-0"
           }`}
         >
           <input
             className={`outline-none focus:border-green-400 placeholder:opacity-60 focus:placeholder:opacity-100 focus:ring-0 focus:border-b-[0.5px] px-4 py-2 rounded-none ${
-              isSticky ? "pl-12" : "w-full"
+              isSticky ? "flex" : "w-full"
             } md:px-6 md:text-lg ${
               theme === "dark"
                 ? "bg-black bg-opacity-30 text-white placeholder-white"
@@ -96,9 +98,9 @@ const SearchBar = ({ onSearch }: any) => {
           <CiSearch
             size={22}
             fill={theme === "dark" ? "#FFFFFF" : "#000000"}
-            className={`absolute ${
-              isSticky ? "left-3 md:left-4" : "right-3"
-            } top-2 md:top-[0.65rem]`}
+            className={`absolute top-2 ${
+              isSticky ? "right-36 md:left-0" : "right-3"
+            } md:top-[0.65rem]`}
           />
           {suggestions.length > 0 && (
             <div
@@ -110,7 +112,7 @@ const SearchBar = ({ onSearch }: any) => {
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={index}
-                    className="p-2 hover:bg-white/15 cursor-pointer"
+                    className="p-2 hover:bg-black/10 hover:text-green-500 transition-all ease-in cursor-pointer"
                     onClick={() => handleSuggestionClick(suggestion.slug)}
                   >
                     {suggestion.title}
@@ -122,7 +124,7 @@ const SearchBar = ({ onSearch }: any) => {
         </div>
       </div>
       {isSticky && (
-        <div className="hidden md:flex md:absolute md:top-0 md:right-0 md:pr-4 md:items-center md:justify-end md:h-full">
+        <div className="hidden md:flex md:absolute md:top-0 md:right-0 md:pr-4 md:items-center md:flex-1  md:h-full">
           <NavLogin />
         </div>
       )}
