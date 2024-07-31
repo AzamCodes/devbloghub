@@ -8,10 +8,9 @@ export const getDataFromToken = (request: NextRequest) => {
       throw new Error("Token not provided");
     }
     const decodedToken: any = jwt.verify(token, process.env.SECRET_TOKEN!);
-    // console.log("Decoded token:", decodedToken); // Debugging line
     return decodedToken.id;
   } catch (error: any) {
     console.error("Token verification error:", error.message); // Detailed error logging
-    throw new Error(error.message);
+    throw new Error("Invalid or expired token");
   }
 };

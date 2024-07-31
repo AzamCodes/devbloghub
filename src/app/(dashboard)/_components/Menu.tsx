@@ -1,25 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoClose, IoMenu } from "react-icons/io5";
 import Link from "next/link";
 import NavItem from "./navitem";
 import { Button } from "@/components/ui/button";
 import { FaSignOutAlt } from "react-icons/fa";
+import { useUser } from "@/context/UserContext";
 import axios from "axios";
-
-interface User {
-  _id: string;
-  username: string;
-  email: string;
-  isVerified: boolean;
-  isAdmin: boolean;
-  img: string;
-}
-
-interface ApiResponse {
-  message: string;
-  data: User;
-}
 
 const menuItems = [
   { label: "Blog", href: "/blog" },
@@ -27,65 +14,22 @@ const menuItems = [
 ];
 
 const Menu = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const { user, isLoggedIn, fetchUserDetails } = useUser();
   const [open, setOpen] = useState(false);
-
-  const getUserDetails = async () => {
-    try {
-      const res = await axios.get<ApiResponse>("/api/users/me", {
-        withCredentials: true,
-      });
-      // console.log("API response:", res.data);
-
-      const { message, data: fetchedUser } = res.data;
-      // console.log("Message:", message);
-      // console.log("Fetched User:", fetchedUser);
-
-      if (message === "User found" && fetchedUser && fetchedUser._id) {
-        setIsLoggedIn(true);
-        setUser(fetchedUser);
-        // console.log("User found and set:", fetchedUser);
-      } else {
-        console.warn("User not found or invalid user object");
-      }
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
-  };
-
-  useEffect(() => {
-    getUserDetails();
-  }, []);
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(
-        "/api/users/logout",
-        {},
-        { withCredentials: true }
-      );
-      // console.log("Logout response:", res.data);
-
-      if (res.status === 200) {
-        setIsLoggedIn(false); // Update state
-        window.location.href = "/login"; // Redirect to login page
-      } else {
-        console.error("Logout failed:", res.data);
-      }
-    } catch (error) {
-      // console.log("Logout error:", error);
+      await axios.get("/api/users/logout");
+      await fetchUserDetails(); // Refresh user details after logout
+      window.location.href = "/login"; // Redirect to login page
+    } catch (error: any) {
+      console.error("Error logging out:", error.message);
     }
   };
 
   const handleMenuClose = () => {
     setOpen(false);
   };
-
-  useEffect(() => {
-    // console.log("isLoggedIn state:", isLoggedIn);
-    // console.log("User state:", user);
-  }, [isLoggedIn, user]);
 
   return (
     <>

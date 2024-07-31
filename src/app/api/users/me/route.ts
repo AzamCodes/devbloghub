@@ -19,7 +19,10 @@ export async function GET(request: NextRequest) {
       data: user,
     });
   } catch (error: any) {
-    console.error("Error in GET request:", error.message); // Detailed error logging
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error in GET request:", error.message);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
