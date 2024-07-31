@@ -3,7 +3,7 @@ import { getDataFromToken } from "@/helpers/getDataFromToken";
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import Post from "@/models/PostModel";
-import User from "../../../models/userModel";
+import User from "@/models/userModel";
 
 connect();
 
