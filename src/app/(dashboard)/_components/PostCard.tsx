@@ -16,12 +16,12 @@ const truncateText = (text: string, length: number) => {
   return text.slice(0, length) + "...";
 };
 
-const PostCard = React.memo(({ post }: any) => {
+const PostCard: React.FC<{ post: any }> = React.memo(({ post }) => {
   const strippedDescription = stripHtmlTags(post.desc);
   const truncatedDescription = truncateText(strippedDescription, 100);
 
   return (
-    <div className="flex flex-col items-center py-3 px-4  glass-effect border-gray-700 border justify-center md:py-4 hover:opacity-85 shadow-xl transition-all ease-in-out duration-300 hover:translate-y-1 rounded-xl gap-4">
+    <div className="flex flex-col items-center py-3 px-4 glass-effect border-gray-700 border justify-center md:py-4 hover:opacity-85 shadow-xl transition-all ease-in-out duration-300 hover:translate-y-1 rounded-xl gap-4">
       <div className="w-full h-[280px] relative rounded-xl overflow-hidden">
         {post.img && (
           <Image
@@ -71,5 +71,8 @@ const PostCard = React.memo(({ post }: any) => {
     </div>
   );
 });
+
+// Assign a display name for better debugging
+PostCard.displayName = "PostCard";
 
 export default PostCard;

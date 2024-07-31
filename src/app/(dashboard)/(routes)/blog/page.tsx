@@ -53,22 +53,23 @@ const BlogPage: React.FC = () => {
     fetchPosts();
   };
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop !==
         document.documentElement.offsetHeight ||
       loading
-    )
+    ) {
       return;
+    }
     if (currentPage < totalPages) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
-  };
+  }, [loading, totalPages, currentPage]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, totalPages]);
+  }, [handleScroll]);
 
   return (
     <div>

@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
@@ -94,7 +93,7 @@ const Profile: React.FC = () => {
     try {
       const res = await axios.get("/api/users/me");
       setData(res.data.data);
-      setEmail(res.data.data.email); // Set initial username
+      setEmail(res.data.data.email); // Set initial email
     } catch (error: any) {
       console.error("Error fetching user details:", error.message);
     }
@@ -105,7 +104,7 @@ const Profile: React.FC = () => {
 
     // Clean up the URL object if it exists
     return () => {
-      if (img) URL.revokeObjectURL(imgPreview || "");
+      if (imgPreview) URL.revokeObjectURL(imgPreview);
     };
   }, [imgPreview]);
 

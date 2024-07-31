@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
@@ -7,6 +6,7 @@ import Link from "next/link";
 import { deletePost } from "@/helpers/action";
 import { MdDeleteOutline } from "react-icons/md";
 import { useToast } from "@/components/ui/use-toast";
+import Image from "next/image"; // Import Image component
 
 interface Post {
   _id: string;
@@ -22,7 +22,6 @@ interface Post {
 
 const DashPage: React.FC = () => {
   const { toast } = useToast();
-
   const params = useParams();
   const userId = params.userId;
   const [posts, setPosts] = useState<Post[]>([]);
@@ -58,12 +57,14 @@ const DashPage: React.FC = () => {
           key={post._id}
           className="bg-transparent rounded-xl relative text-wrap p-3 md:p-4 flex flex-col gap-3 md:flex-row hover:shadow-xl overflow-hidden mb-5"
         >
-          <img
+          <Image
             src={post.img}
             alt={post.title}
+            width={500} // Set appropriate width
+            height={320} // Set appropriate height
             className="w-full h-[22rem] md:flex-1 md:h-80 object-cover rounded-lg"
           />
-          <div className=" w-full  md:flex-1 text-ellipse truncate">
+          <div className="w-full md:flex-1 text-ellipse truncate">
             <h2 className="text-xl font-semibold">{post.title}</h2>
             <p className="mt-2 text-gray-600 md:max-h-6xl text-ellipsis truncate">
               {post.desc}
@@ -75,7 +76,7 @@ const DashPage: React.FC = () => {
               Read More
             </Link>
             <form
-              className="absolute right-3 top-4 md:top-3  md:right-3"
+              className="absolute right-3 top-4 md:top-3 md:right-3"
               onSubmit={async (e) => {
                 e.preventDefault();
                 await deletePost(post._id);

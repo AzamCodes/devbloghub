@@ -18,7 +18,6 @@ const fetchUser = async (userId: string) => {
     }
     const data = await res.json();
     userCache[userId] = data; // Store fetched data in cache
-    // console.log("Fetched user data:", data);
     return data;
   } catch (error: any) {
     console.error("Error fetching user:", error.message);
@@ -26,7 +25,7 @@ const fetchUser = async (userId: string) => {
   }
 };
 
-const PostUser = React.memo(({ userId }: { userId: string }) => {
+const PostUser: React.FC<{ userId: string }> = React.memo(({ userId }) => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,5 +68,8 @@ const PostUser = React.memo(({ userId }: { userId: string }) => {
     </div>
   );
 });
+
+// Assign a display name for better debugging
+PostUser.displayName = "PostUser";
 
 export default PostUser;

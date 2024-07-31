@@ -1,6 +1,5 @@
 "use client";
 import { Label } from "@/components/ui/label";
-
 import {
   Card,
   CardContent,
@@ -15,7 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginSchema } from "@/lib/loginSchema";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -25,11 +23,11 @@ import axios from "axios";
 import { toast, useToast } from "@/components/ui/use-toast";
 
 type Inputs = z.infer<typeof loginSchema>;
+
 const LoginPage = () => {
   const { toast } = useToast();
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
-
   const [buttonDisable, setButtonDisable] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -46,13 +44,9 @@ const LoginPage = () => {
   const onLogIn: SubmitHandler<Inputs> = async (data) => {
     try {
       setLoading(true);
-      // console.log(data);
       const response = await axios.post("/api/users/login", data);
-      // console.log(response);
-
       const status = response.data.status;
-      // console.log(status);
-      // console.log("Login success", status);
+
       if (status === 400) {
         toast({
           variant: "destructive",
@@ -67,7 +61,6 @@ const LoginPage = () => {
         });
       }
     } catch (error: any) {
-      // console.log("Login failed", error.message);
       toast({
         variant: "destructive",
         title: "Login Failed",
@@ -112,14 +105,11 @@ const LoginPage = () => {
             <CardTitle className="text-green-500 text-2xl">
               {loading ? (
                 <>
-                  {/* <div className="flex items-center bg-black top-28 justify-center">
-                    <Image src={"/public/load.svg"} fill={true} alt="Loader" />
-                  </div> */}
                   <h2>Processing</h2>
                 </>
               ) : (
                 "Login"
-              )}{" "}
+              )}
             </CardTitle>
             <CardDescription className="text-gray-200">
               Please Login To Verify
@@ -171,7 +161,7 @@ const LoginPage = () => {
             </Button>
             <span className="gap-[2px] md:gap-2 text-xs md:text-sm   flex items-center">
               <p className=" text-nowrap items-center">
-                Don't Have an account?
+                Don&apos;t Have an account?
               </p>
               <Link
                 className="hover:text-green-400  hover:underline-offset-1 hover:underline transition-all"
