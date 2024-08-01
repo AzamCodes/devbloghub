@@ -11,8 +11,15 @@ const SearchBar = ({ onSearch }: any) => {
   const [query, setQuery] = useState("");
   const [isSticky, setIsSticky] = useState(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const router = useRouter();
+
+  // Set the default theme to dark if it's not set
+  useEffect(() => {
+    if (!theme) {
+      setTheme("dark");
+    }
+  }, [theme, setTheme]);
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -78,13 +85,13 @@ const SearchBar = ({ onSearch }: any) => {
         <div
           className={`relative w-full ${
             isSticky
-              ? "max-w-xl flex items-center md:flex-1 md:justify-start justify-center"
+              ? "max-w-xl relative flex items-center md:flex-1 md:justify-start justify-center"
               : "lg:max-w-lg lg:ml-0"
           }`}
         >
           <input
-            className={`outline-none focus:border-green-400 placeholder:opacity-60 focus:placeholder:opacity-100 focus:ring-0 focus:border-b-[0.5px] px-4 py-2 rounded-none ${
-              isSticky ? "flex" : "w-full"
+            className={`outline-none focus:border-green-400 relative placeholder:opacity-60 focus:placeholder:opacity-100 focus:ring-0 focus:border-b-[0.5px] px-4 py-2 rounded-none ${
+              isSticky ? "flex relative pl-10" : "w-full"
             } md:px-6 md:text-lg ${
               theme === "dark"
                 ? "bg-black bg-opacity-30 text-white placeholder-white"
@@ -97,9 +104,10 @@ const SearchBar = ({ onSearch }: any) => {
           />
           <CiSearch
             size={22}
-            fill={theme === "dark" ? "#FFFFFF" : "#000000"}
             className={`absolute top-2 ${
-              isSticky ? "right-36 md:left-0" : "right-3"
+              theme === "dark" ? "text-white" : "text-black"
+            } ${
+              isSticky ? "left-12 sm:left-40 md:left-0" : "right-3"
             } md:top-[0.65rem]`}
           />
           {suggestions.length > 0 && (

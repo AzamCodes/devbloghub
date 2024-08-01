@@ -8,13 +8,14 @@ export function middleware(request: NextRequest) {
     path === "/login" ||
     path === "/signup" ||
     path === "/verifyemail" ||
-    path === "/blog";
+    path === "/blog" ||
+    path === "/";
   const token = request.cookies.get("token")?.value || "";
 
   // If the user is logged in and tries to access a public path, redirect to the profile
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/profile", request.nextUrl));
-  }
+  // if (isPublicPath && token) {
+  //   return NextResponse.redirect(new URL("/profile", request.nextUrl));
+  // }
 
   // If the user is not logged in and tries to access protected paths, redirect to the blog
   if (path === "/create" && !token) {

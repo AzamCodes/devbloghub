@@ -10,7 +10,7 @@ interface SideBarProps {
   onClick?: () => void;
 }
 
-const NavItem = ({ label, href }: SideBarProps) => {
+const NavItem = ({ label, href, onClick }: SideBarProps) => {
   const router = useRouter();
   const pathname = usePathname(); // Assuming you're using it
 
@@ -20,11 +20,12 @@ const NavItem = ({ label, href }: SideBarProps) => {
       (pathname && pathname.startsWith(`${href}/`))
     : false; // Fallback for initial render
 
-  const onClick = () => {
+  const handleClick = () => {
     if (router) {
       // Check if router exists before using it
       try {
         router.push(href);
+        if (onClick) onClick();
       } catch (error) {
         console.error(error); // Handle errors gracefully
       }
@@ -34,7 +35,7 @@ const NavItem = ({ label, href }: SideBarProps) => {
   return (
     <div>
       <button
-        onClick={onClick}
+        onClick={handleClick}
         className={cn(
           "flex items-center text-inherit",
           isActive && "text-green-400"

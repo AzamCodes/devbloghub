@@ -1,4 +1,5 @@
-"use client";
+"use client"; // Ensure this component is treated as a client-side component
+
 import { Label } from "@/components/ui/label";
 import {
   Card,
@@ -20,11 +21,13 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { useUser } from "@/context/UserContext";
 import { toast, useToast } from "@/components/ui/use-toast";
 
 type Inputs = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
+  const { setUser, fetchUserDetails } = useUser();
   const { toast } = useToast();
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -42,10 +45,10 @@ const LoginPage = () => {
   });
 
   const onLogIn: SubmitHandler<Inputs> = async (data) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await axios.post("/api/users/login", data);
-      const status = response.data.status;
+      const { status, user } = response.data; // Extract user from response
 
       if (status === 400) {
         toast({
@@ -54,6 +57,8 @@ const LoginPage = () => {
           description: "Invalid Credentials",
         });
       } else {
+        setUser(user); // Update context user
+        await fetchUserDetails(); // Ensure context is up-to-date
         router.push("/blog");
         toast({
           variant: "popup",
@@ -176,4 +181,5 @@ const LoginPage = () => {
     </>
   );
 };
+
 export default LoginPage;

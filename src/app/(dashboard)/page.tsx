@@ -1,27 +1,62 @@
 // pages/index.tsx
+"use client";
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useUser } from "@/context/UserContext";
+import { Metadata } from "next";
 
 interface HomePageProps {
   // Remove recentPosts and popularPosts as we are not using them
 }
 
+const metadata: Metadata = {
+  title: "Home Page",
+  description: "Blog Application made with Next JS",
+};
+
 const HomePage: React.FC<HomePageProps> = () => {
+  const { theme } = useTheme();
+  const { isLoggedIn } = useUser(); // Use the context
+  const router = useRouter();
+
+  const handleStartYourBlogClick = () => {
+    // Redirect to /login if not authenticated
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      router.push("/create");
+    }
+  };
+
+  const handleStartBloggingClick = () => {
+    // Redirect to /login if not authenticated
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      router.push("/create");
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div
+      className={`min-h-screen flex flex-col ${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
       {/* Hero Section */}
       <header className="bg-black text-green-400 py-12 text-center flex-shrink-0">
         <h1 className="text-4xl md:text-5xl font-bold">Welcome to Devblog</h1>
         <p className="mt-4 text-lg md:text-xl">
           Create, share, and explore amazing blogs!
         </p>
-        <Link
-          href="/create"
+        <button
+          onClick={handleStartYourBlogClick}
           className="mt-8 inline-block bg-green-400 text-black py-2 px-6 rounded-full text-lg md:text-xl"
         >
           Start Your Blog
-        </Link>
+        </button>
       </header>
 
       {/* Feature Highlight Section */}
@@ -84,12 +119,12 @@ const HomePage: React.FC<HomePageProps> = () => {
               Have something to share? Start your own blog with just a few
               clicks and connect with a global audience.
             </p>
-            <Link
-              href="/create"
+            <button
+              onClick={handleStartBloggingClick}
               className="mt-4 inline-block bg-black border border-green-400 hover:bg-green-500 hover:text-black transition-all ease-in-out text-green-400 py-2 px-4 rounded-full text-lg"
             >
               Start Blogging
-            </Link>
+            </button>
           </div>
         </div>
       </section>

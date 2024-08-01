@@ -16,9 +16,22 @@ export const POST = async (req: NextRequest) => {
 
     const formData = await req.formData();
     const img = formData.get("img");
+    const slug = formData.get("slug");
 
     if (!img || typeof img === "string") {
       throw new Error("Image file is required and must be a file");
+    }
+
+    // Check if the slug already exists in the database
+    const existingPost = await Post.findOne({ slug });
+    if (existingPost) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Slug already in use. Please choose a unique slug.",
+        },
+        { status: 400 }
+      );
     }
 
     const imageBuffer = Buffer.from(await img.arrayBuffer());
@@ -42,21 +55,20 @@ export const POST = async (req: NextRequest) => {
     });
 
     const imgUrl = cloudinaryResponse.secure_url;
-    // console.log("Cloudinary response:", cloudinaryResponse);
 
     // Save post details to the database
     const blogData = {
       title: formData.get("title"),
       desc: formData.get("desc"),
       userId: user._id,
-      slug: formData.get("slug"),
+      slug,
       img: imgUrl,
       author: user.username,
       authorImg: user.img,
     };
 
     const newPost = await Post.create(blogData);
-    // console.log("New post created:", newPost);
+
     return NextResponse.json({
       imgUrl,
       success: true,

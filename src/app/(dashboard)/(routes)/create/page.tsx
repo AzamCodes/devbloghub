@@ -11,6 +11,7 @@ import "react-quill/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
+import { useRouter } from "next/navigation";
 
 const modules = {
   syntax: {
@@ -50,6 +51,7 @@ const formats = [
 ];
 
 const CreatePage = () => {
+  const router = useRouter();
   const { toast } = useToast();
   const [img, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -131,15 +133,28 @@ const CreatePage = () => {
           slug: "",
         });
         setImage(null);
+        router.push("/blog");
       } else {
         throw new Error(response.data.message);
       }
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error.",
-        description: error.message,
-      });
+      if (
+        error.response &&
+        error.response.data.message ===
+          "Slug already in use. Please choose a unique slug."
+      ) {
+        toast({
+          variant: "destructive",
+          title: "Error.",
+          description: "Slug already in use. Please choose a unique slug.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error.",
+          description: error.message,
+        });
+      }
     } finally {
       setLoading(false);
     }

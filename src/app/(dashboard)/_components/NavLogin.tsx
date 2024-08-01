@@ -1,4 +1,5 @@
-"use client";
+"use client"; // Ensure this component is treated as a client-side component
+
 import { ModeToggle } from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -6,7 +7,7 @@ import React from "react";
 import { useUser } from "@/context/UserContext";
 
 const NavLogin = () => {
-  const { user, isLoggedIn } = useUser(); // No need to call fetchUserDetails here
+  const { user, isLoggedIn } = useUser(); // Using context to get user info
 
   return (
     <div className="flex items-center gap-2 text-xs">
@@ -25,9 +26,20 @@ const NavLogin = () => {
             </Button>
           </>
         ) : (
-          <Button variant={"outline"}>
-            <Link href={"/login"}>Login</Link>
-          </Button>
+          <>
+            <div className="flex items-center">
+              <Button variant={"custom"} size={"default"} className="mr-2">
+                <Link href={"/signup"}>Sign Up</Link>
+              </Button>
+              <Button
+                className="text-base flex-1 rounded-lg"
+                variant={"outline"}
+                size={"lg"}
+              >
+                <Link href={"/login"}>Login</Link>
+              </Button>
+            </div>
+          </>
         )}
       </div>
     </div>

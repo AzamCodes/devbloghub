@@ -1,5 +1,6 @@
+// context/UserContext.tsx
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 interface User {
@@ -16,6 +17,8 @@ interface UserContextType {
   isLoggedIn: boolean;
   loading: boolean;
   fetchUserDetails: () => Promise<void>;
+  setUser: (user: User | null) => void;
+  setIsLoggedIn: (status: boolean) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -49,11 +52,18 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     fetchUserDetails();
-  }, []); // This fetches user details once on mount
+  }, []);
 
   return (
     <UserContext.Provider
-      value={{ user, isLoggedIn, loading, fetchUserDetails }}
+      value={{
+        user,
+        isLoggedIn,
+        loading,
+        fetchUserDetails,
+        setUser,
+        setIsLoggedIn,
+      }}
     >
       {children}
     </UserContext.Provider>

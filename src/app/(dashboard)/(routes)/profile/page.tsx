@@ -9,7 +9,7 @@ import { useUser } from "@/context/UserContext";
 
 const Profile: React.FC = () => {
   const router = useRouter();
-  const { user, fetchUserDetails } = useUser();
+  const { user, setUser, setIsLoggedIn, fetchUserDetails } = useUser();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [img, setImage] = useState<File | null>(null);
@@ -71,6 +71,8 @@ const Profile: React.FC = () => {
   const logout = async () => {
     try {
       await axios.post("/api/users/logout");
+      setUser(null); // Clear user data
+      setIsLoggedIn(false); // Update login state
       toast({
         variant: "popup",
         title: "Logout successful",

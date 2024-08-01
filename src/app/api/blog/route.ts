@@ -1,7 +1,12 @@
 import { connect } from "@/dbConfig/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Post from "@/models/PostModel";
+// import { Metadata } from "next";
 
+// const metadata: Metadata = {
+//   title: "BLOG",
+//   description: "Blog Application made with Next JS",
+// };
 connect();
 export const GET = async (request: NextRequest) => {
   try {

@@ -68,7 +68,7 @@ const SingleBlogPost = async ({ params }: PageProps) => {
   const { slug } = params;
   const post = await fetchPost(slug);
 
-  console.log("Fetched post:", post);
+  // console.log("Fetched post:", post);
 
   if (!post) {
     return notFound(); // Handle post not found
