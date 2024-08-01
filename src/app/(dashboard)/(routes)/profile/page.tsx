@@ -137,7 +137,7 @@ const Profile: React.FC = () => {
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <label htmlFor="img" className="cursor-pointer">
           <Image
-            src={imgPreview || user?.img || "/upl.png"}
+            src={imgPreview || user?.img || "/up.png"}
             height={70}
             width={130}
             alt="img upload"
