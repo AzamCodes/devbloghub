@@ -41,7 +41,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",
       html:
         emailType === "VERIFY"
-          ? `<p>Thank you for signing up for DEVLOCK! <br>To unlock all the features and benefits, please verify your email address.<br> Verifying your email ensures you receive important updates and offers.
+          ? `<p>Thank you for signing up for DEVBLOG! <br>To unlock all the features and benefits, please verify your email address.<br> Verifying your email ensures you receive important updates and offers.
 
 Click the button below to verify your email <br>
 <a href="${
@@ -55,7 +55,7 @@ Click the button below to verify your email <br>
               process.env.API_URL
             }/verifyemail?token=${hashedToken}
             </p>`
-          : `<p>We received a request to reset your password for your account on DEVLOCK. <br>If you requested this reset, please follow these steps to create a new password:<br>
+          : `<p>We received a request to reset your password for your account on DEVBLOG. <br>If you requested this reset, please follow these steps to create a new password:<br>
 
 1)Click the link below:<br>
 

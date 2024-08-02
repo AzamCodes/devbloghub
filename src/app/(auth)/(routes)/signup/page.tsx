@@ -59,6 +59,7 @@ const SignUpPage = () => {
 
         description: "Check Email for Verification",
       });
+      router.push("/login");
     } catch (error: any) {
       // console.log("SignUp Failed!", error.message);
       toast({

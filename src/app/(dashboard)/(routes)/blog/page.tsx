@@ -27,7 +27,6 @@ const getData = async (
 
 const BlogPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -36,8 +35,14 @@ const BlogPage: React.FC = () => {
   const fetchPosts = useCallback(async () => {
     setLoading(true);
     const data = await getData(currentPage, 6, query);
-    setPosts((prevPosts) => [...prevPosts, ...data.posts]);
-    setFilteredPosts((prevPosts) => [...prevPosts, ...data.posts]);
+
+    // Ensure no duplicate posts
+    setPosts((prevPosts) => {
+      const existingIds = new Set(prevPosts.map((post) => post._id));
+      const newPosts = data.posts.filter((post) => !existingIds.has(post._id));
+      return [...prevPosts, ...newPosts];
+    });
+
     setTotalPages(data.totalPages);
     setLoading(false);
   }, [currentPage, query]);
@@ -49,8 +54,7 @@ const BlogPage: React.FC = () => {
   const handleSearch = (query: string) => {
     setQuery(query);
     setCurrentPage(1);
-    setPosts([]);
-    setFilteredPosts([]);
+    setPosts([]); // Clear existing posts for new search
     fetchPosts();
   };
 
@@ -80,7 +84,7 @@ const BlogPage: React.FC = () => {
       </Head>
       <SearchBar onSearch={handleSearch} />
       <div className="px-3 md:px-3 py-10 md:p-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredPosts.map((post) => (
+        {posts.map((post) => (
           <PostCard key={post._id} post={post} />
         ))}
         {loading &&

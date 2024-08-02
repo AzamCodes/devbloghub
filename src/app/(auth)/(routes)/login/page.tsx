@@ -48,9 +48,9 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const response = await axios.post("/api/users/login", data);
-      const { status, user } = response.data; // Extract user from response
+      const { success, user } = response.data;
 
-      if (status === 400) {
+      if (success !== 200) {
         toast({
           variant: "destructive",
           title: "Login Failed",
@@ -69,7 +69,7 @@ const LoginPage = () => {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: error.message,
+        description: error.response?.data?.error || error.message,
       });
     } finally {
       setLoading(false);
@@ -79,11 +79,7 @@ const LoginPage = () => {
   const watchFields = watch(["email", "password"]);
   useEffect(() => {
     const [email, password] = watchFields;
-    if (email && password) {
-      setButtonDisable(false);
-    } else {
-      setButtonDisable(true);
-    }
+    setButtonDisable(!(email && password));
   }, [watchFields]);
 
   const togglePasswordVisibility = () => {
@@ -103,27 +99,21 @@ const LoginPage = () => {
       </div>
       <form
         onSubmit={handleSubmit(onLogIn)}
-        className="flex justify-center px-4 py-28 md:py-16 selection:bg-gray-600 selection:text-green-500 "
+        className="flex justify-center px-4 py-28 md:py-16 selection:bg-gray-600 selection:text-green-500"
       >
-        <Card className="w-full md:w-[40%] min-h-full shadow-2xl  md:min-h-[70vh] bg-black/5   rounded-xl backdrop-blur-[100px]   border-none ">
+        <Card className="w-full md:w-[40%] min-h-full shadow-2xl md:min-h-[70vh] bg-black/5 rounded-xl backdrop-blur-[100px] border-none">
           <CardHeader>
             <CardTitle className="text-green-500 text-2xl">
-              {loading ? (
-                <>
-                  <h2>Processing</h2>
-                </>
-              ) : (
-                "Login"
-              )}
+              {loading ? "Processing" : "Login"}
             </CardTitle>
             <CardDescription className="text-gray-200">
               Please Login To Verify
             </CardDescription>
           </CardHeader>
-          <CardContent className=" flex justify-center flex-col gap-3">
+          <CardContent className="flex justify-center flex-col gap-3">
             <Label htmlFor="email">Email</Label>
             <Input
-              className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px]  border-green-700"
+              className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px] border-green-700"
               type="email"
               id="email"
               placeholder="email"
@@ -135,7 +125,7 @@ const LoginPage = () => {
             <div className="items-center relative">
               <Label htmlFor="password">Password</Label>
               <Input
-                className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px]  border-green-700"
+                className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px] border-green-700"
                 type={passwordVisible ? "text" : "password"}
                 id="password"
                 placeholder="password"
@@ -157,20 +147,20 @@ const LoginPage = () => {
               {buttonDisable ? "No Login" : "Login"}
             </Button>
           </CardContent>
-          <CardFooter className="flex justify-between items-center ">
+          <CardFooter className="flex justify-between items-center">
             <Button
-              variant={"link"}
-              className="hover:text-green-400 text-xs  md:text-sm transition-all"
+              variant="link"
+              className="hover:text-green-400 text-xs md:text-sm transition-all"
             >
-              <Link href={"/emailforgotpass"}>Forgot Password?</Link>
+              <Link href="/emailforgotpass">Forgot Password?</Link>
             </Button>
-            <span className="gap-[2px] md:gap-2 text-xs md:text-sm   flex items-center">
-              <p className=" text-nowrap items-center">
+            <span className="gap-[2px] md:gap-2 text-xs md:text-sm flex items-center">
+              <p className="text-nowrap items-center">
                 Don&apos;t Have an account?
               </p>
               <Link
-                className="hover:text-green-400  hover:underline-offset-1 hover:underline transition-all"
-                href={"/signup"}
+                className="hover:text-green-400 hover:underline-offset-1 hover:underline transition-all"
+                href="/signup"
               >
                 SignUp
               </Link>
