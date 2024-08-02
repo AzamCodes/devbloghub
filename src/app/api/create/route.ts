@@ -1,65 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "@/utils/cloudinaryConfig"; // Adjust the import path as needed
+import cloudinary from "@/utils/cloudinaryConfig";
 import { Readable } from "stream";
-import Post from "@/models/PostModel"; // Import your Post model
-import User from "@/models/UserModel"; // Import your User model
-import { getDataFromToken } from "@/helpers/getDataFromToken"; // Import your token helper
+import Post from "@/models/PostModel";
+import User from "@/models/UserModel";
+import { getDataFromToken } from "@/helpers/getDataFromToken";
+import sharp from "sharp";
 
 export const POST = async (req: NextRequest) => {
   try {
-    const userId = await getDataFromToken(req); // Assuming this function extracts user ID from the token
+    // Get user ID from token
+    const userId = await getDataFromToken(req);
     const user = await User.findOne({ _id: userId }).select("-password");
 
     if (!user) {
       throw new Error("User not found");
     }
 
+    // Get form data
     const formData = await req.formData();
     const img = formData.get("img");
-    const slug = formData.get("slug");
+    const slug = formData.get("slug") as string; // Ensure slug is a string
 
-    if (!img || typeof img === "string") {
+    if (!img || !(img instanceof File)) {
       throw new Error("Image file is required and must be a file");
-    }
-
-    // Check if the slug already exists in the database
-    const existingPost = await Post.findOne({ slug });
-    if (existingPost) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Slug already in use. Please choose a unique slug.",
-        },
-        { status: 400 }
-      );
     }
 
     const imageBuffer = Buffer.from(await img.arrayBuffer());
 
-    // Convert the buffer to a readable stream
+    // Validate image with sharp
+    const { width, height } = await sharp(imageBuffer).metadata();
+
+    if (width === undefined || height === undefined) {
+      throw new Error("Failed to retrieve image metadata");
+    }
+
+    if (width < 800 || height < 600) {
+      throw new Error("Image dimensions should be at least 800x600 pixels.");
+    }
+
+    if (imageBuffer.length > 5 * 1024 * 1024) {
+      // 5MB
+      throw new Error("Image size should not exceed 5MB.");
+    }
+
+    // Upload image to Cloudinary
     const imageStream = new Readable();
     imageStream.push(imageBuffer);
     imageStream.push(null);
 
-    // Upload image to Cloudinary
     const cloudinaryResponse = await new Promise<any>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: "blog_posts" },
+        { folder: "blog_posts", quality: "auto", fetch_format: "auto" },
         (error, result) => {
           if (error) return reject(error);
           resolve(result);
         }
       );
-
       imageStream.pipe(uploadStream);
     });
 
     const imgUrl = cloudinaryResponse.secure_url;
 
-    // Save post details to the database
+    // Save post details
     const blogData = {
-      title: formData.get("title"),
-      desc: formData.get("desc"),
+      title: formData.get("title") as string, // Ensure title is a string
+      desc: formData.get("desc") as string, // Ensure desc is a string
       userId: user._id,
       slug,
       img: imgUrl,
@@ -77,6 +82,9 @@ export const POST = async (req: NextRequest) => {
     });
   } catch (error: any) {
     console.error("Error creating post:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: error.message || "An error occurred" },
+      { status: 500 }
+    );
   }
 };

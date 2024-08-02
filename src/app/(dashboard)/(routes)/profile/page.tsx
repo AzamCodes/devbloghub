@@ -1,11 +1,12 @@
 "use client";
-import React, { useEffect, useState, FormEvent, ChangeEvent } from "react";
+import React, { useEffect, useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
+import { useDropzone } from "react-dropzone";
 
 const Profile: React.FC = () => {
   const router = useRouter();
@@ -52,8 +53,8 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleDrop = (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
     if (file) {
       if (file.type.startsWith("image/")) {
         setImage(file);
@@ -96,6 +97,13 @@ const Profile: React.FC = () => {
     };
   }, [user, imgPreview, fetchUserDetails]);
 
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleDrop,
+    accept: {
+      "image/*": [], // Correct format for accept
+    },
+  });
+
   return (
     <div className="pt-5 px-5">
       <h2 className="text-lg md:text-2xl pb-4 font-bold">Profile Page</h2>
@@ -134,17 +142,29 @@ const Profile: React.FC = () => {
       <h2 className="pt-5 text-lg md:text-2xl text-green-500 font-semibold pb-3">
         New Profile Upload
       </h2>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center">
-        <label htmlFor="img" className="cursor-pointer">
+      <div
+        {...getRootProps()}
+        className="flex flex-col items-center border-dashed border-2 border-gray-300 p-4 rounded-md cursor-pointer relative overflow-hidden"
+      >
+        <input
+          {...getInputProps()}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+        {imgPreview ? (
           <Image
-            src={imgPreview || user?.img || "/up.png"}
+            src={imgPreview}
+            alt="Image preview"
             height={70}
             width={130}
-            alt="img upload"
             className="rounded-sm"
           />
-        </label>
-        <input type="file" id="img" hidden onChange={handleImageChange} />
+        ) : (
+          <p className="text-gray-400">
+            Drag & drop an image here, or click to select one
+          </p>
+        )}
+      </div>
+      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-4">
         <input
           type="text"
           value={email}

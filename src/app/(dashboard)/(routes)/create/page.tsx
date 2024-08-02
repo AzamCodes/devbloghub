@@ -1,17 +1,17 @@
 "use client";
+import React, { FormEvent, useState } from "react";
+import Image from "next/image";
 import sanitizeHtml from "sanitize-html";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
-import Image from "next/image";
-import React, { FormEvent, useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import { useRouter } from "next/navigation";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const modules = {
   syntax: {
@@ -27,7 +27,7 @@ const modules = {
       { indent: "-1" },
       { indent: "+1" },
     ],
-    ["link", "image"],
+    ["link"],
     ["code-block"],
     ["clean"],
   ],
@@ -46,14 +46,16 @@ const formats = [
   "bullet",
   "indent",
   "link",
-  "image",
   "code-block",
 ];
 
 const CreatePage = () => {
   const router = useRouter();
   const { toast } = useToast();
-  const [img, setImage] = useState<File | null>(null);
+  const [img, setImage] = useState<{
+    file: File | null;
+    imgURL: string | null;
+  }>({ file: null, imgURL: null });
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     title: "",
@@ -75,7 +77,12 @@ const CreatePage = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    setImage(file);
+
+    if (file) {
+      // Create a URL for the image
+      const imgURL = URL.createObjectURL(file);
+      setImage({ file, imgURL }); // Update state with file and URL
+    }
   };
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -91,7 +98,6 @@ const CreatePage = () => {
         allowedTags: [
           "p",
           "a",
-          "img",
           "b",
           "i",
           "u",
@@ -103,7 +109,6 @@ const CreatePage = () => {
         ],
         allowedAttributes: {
           a: ["href", "title", "target"],
-          img: ["src", "alt", "title"],
           "*": ["style"],
         },
         allowedSchemes: ["http", "https", "mailto", "tel"],
@@ -111,8 +116,8 @@ const CreatePage = () => {
       formData.append("desc", sanitizedDesc);
       formData.append("slug", data.slug);
 
-      if (img) {
-        formData.append("img", img);
+      if (img.file) {
+        formData.append("img", img.file);
       }
 
       const response = await axios.post("/api/create", formData, {
@@ -132,29 +137,21 @@ const CreatePage = () => {
           desc: "",
           slug: "",
         });
-        setImage(null);
+        setImage({ file: null, imgURL: null });
         router.push("/blog");
       } else {
         throw new Error(response.data.message);
       }
     } catch (error: any) {
-      if (
-        error.response &&
-        error.response.data.message ===
-          "Slug already in use. Please choose a unique slug."
-      ) {
-        toast({
-          variant: "destructive",
-          title: "Error.",
-          description: "Slug already in use. Please choose a unique slug.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Error.",
-          description: error.message,
-        });
-      }
+      console.error("Error creating post:", error);
+      toast({
+        variant: "destructive",
+        title: "Error.",
+        description:
+          error.response?.data?.message ||
+          error.message ||
+          "An unknown error occurred",
+      });
     } finally {
       setLoading(false);
     }
@@ -168,7 +165,7 @@ const CreatePage = () => {
       <p className="text-xl">Upload Image</p>
       <label htmlFor="img">
         <Image
-          src={!img ? "/upl.png" : URL.createObjectURL(img)}
+          src={img.imgURL || "/upl.png"}
           height={70}
           width={130}
           alt="img upload"
