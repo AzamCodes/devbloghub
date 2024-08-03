@@ -28,6 +28,11 @@ export default function RootLayout({
       suppressHydrationWarning
       className="max-w-[1536px] ml-auto mr-auto"
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/icons/ico2.png" />
+        <meta name="theme-color" content="#000000" />
+      </head>
       <body className={inter.className}>
         <UserProvider>
           <ThemeProvider
