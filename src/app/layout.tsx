@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -11,11 +11,15 @@ import Head from "next/head";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: {
     default: "DEVBLOG | BLOG",
     template: "DEVBLOG | %s",
   },
   description: "This is Blog Application for Devs.",
+};
+export const viewport: Viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
