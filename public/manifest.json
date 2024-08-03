@@ -1,7 +1,7 @@
 {
   "name": "DEVBLOG",
   "short_name": "DEVBLOG",
-  "description": "A blog about development",
+  "description": "A blog where users can create posts with their profile images.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -16,6 +16,20 @@
       "src": "/icons/ico2.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-view.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Desktop View"
+    },
+    {
+      "src": "/screenshots/mobile-view.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "label": "Mobile View"
     }
   ]
 }
