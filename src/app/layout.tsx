@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { UserProvider } from "@/context/UserContext";
 import Footer from "./(dashboard)/_components/Footer";
 import Navbar from "./(dashboard)/_components/Navbar";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,11 +29,11 @@ export default function RootLayout({
       suppressHydrationWarning
       className="max-w-[1536px] ml-auto mr-auto"
     >
-      <head>
+      <Head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icons/ico2.png" />
         <meta name="theme-color" content="#000000" />
-      </head>
+      </Head>
       <body className={inter.className}>
         <UserProvider>
           <ThemeProvider

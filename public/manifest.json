@@ -27,7 +27,7 @@
     },
     {
       "src": "/screenshots/mobile-view.png",
-      "sizes": "310x675",
+      "sizes": "320x320",
       "type": "image/png",
       "label": "Mobile View"
     }
