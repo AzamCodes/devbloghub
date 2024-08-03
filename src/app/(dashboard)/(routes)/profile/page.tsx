@@ -110,15 +110,13 @@ const Profile: React.FC = () => {
       <h4>
         {user ? (
           <div className="flex flex-col items-center">
-            {user.img && (
-              <Image
-                src={user.img}
-                alt="User Image"
-                width={200}
-                className="rounded-lg mb-3"
-                height={200}
-              />
-            )}
+            <Image
+              src={user.img || "/user.jpg"}
+              alt="User Image"
+              width={200}
+              height={200}
+              className="rounded-lg mb-3"
+            />
             <div className="flex justify-start flex-col">
               <p className="text-gray-400">
                 Username:{" "}
