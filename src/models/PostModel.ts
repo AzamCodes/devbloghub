@@ -16,7 +16,7 @@ const postSchema = new Schema(
     },
     authorImg: {
       type: String, // Ensure this field is included in the schema
-      required: true,
+      // required: true,
     },
     author: {
       type: String,
