@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
-import { deletePost } from "@/helpers/action";
 import { MdDeleteOutline } from "react-icons/md";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
@@ -67,9 +66,28 @@ const DashPage: React.FC = () => {
   };
 
   const getShortDescription = (desc: string) => {
-    const maxLength = 150; // Adjust the max length as needed
+    const maxLength = 150;
     if (desc.length <= maxLength) return desc;
     return desc.slice(0, maxLength) + "...";
+  };
+
+  const handleDelete = async (postId: string) => {
+    try {
+      const response = await axios.delete(`/api/post`, {
+        data: { postId },
+      });
+      setPosts(posts.filter((post) => post._id !== postId));
+      toast({
+        variant: "popup",
+        title: "Post has been Deleted Successfully!",
+      });
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast({
+        variant: "popup",
+        title: "Failed to delete post",
+      });
+    }
   };
 
   return (
@@ -90,25 +108,13 @@ const DashPage: React.FC = () => {
           <div className="w-full md:flex-1 text-ellipse truncate relative">
             <div className="flex justify-between items-start">
               <h2 className="text-xl font-semibold">{post.title}</h2>
-              <form
-                className="ml-2 md:absolute md:right-3 md:top-3"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  await deletePost(post._id);
-                  setPosts(posts.filter((p) => p._id !== post._id));
-                  toast({
-                    variant: "popup",
-                    title: "Post has been Deleted Successfully!",
-                  });
-                }}
+              <button
+                type="button"
+                className="ml-2 md:absolute md:right-3 md:top-3 border-none hover:text-green-400 transition-all outline-none bg-transparent"
+                onClick={() => handleDelete(post._id)}
               >
-                <button
-                  type="submit"
-                  className="border-none hover:text-green-400 transition-all outline-none bg-transparent"
-                >
-                  <MdDeleteOutline size={24} />
-                </button>
-              </form>
+                <MdDeleteOutline size={24} />
+              </button>
             </div>
             <div
               className="mt-2 text-gray-600 md:max-h-6xl text-ellipsis truncate"

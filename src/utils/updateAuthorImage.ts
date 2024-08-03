@@ -5,7 +5,7 @@ import Post from "@/models/PostModel";
 export async function updateAuthorImage(userId: string, newImgUrl: string) {
   try {
     await Post.updateMany({ userId }, { $set: { authorImg: newImgUrl } });
-    console.log("Author images updated for old posts");
+    // console.log("Author images updated for old posts");
   } catch (error) {
     console.error("Error updating author images for old posts:", error);
   }

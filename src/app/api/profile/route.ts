@@ -63,16 +63,16 @@ export const POST = async (req: NextRequest) => {
       imageStream.pipe(uploadStream);
     });
 
-    console.log("Cloudinary Response:", cloudinaryResponse);
+    // console.log("Cloudinary Response:", cloudinaryResponse);
 
     const imgUrl = cloudinaryResponse.secure_url;
-    console.log("Profile Image URL:", imgUrl);
+    // console.log("Profile Image URL:", imgUrl);
 
     // Update user profile with new image URL
     user.img = imgUrl;
     await user.save();
 
-    console.log("Updated User Document:", user);
+    // console.log("Updated User Document:", user);
 
     return NextResponse.json({
       imgUrl,
