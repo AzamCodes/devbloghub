@@ -1,16 +1,19 @@
 "use client";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useCallback } from "react";
 import Image from "next/image";
 import sanitizeHtml from "sanitize-html";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.snow.css"; // Ensure Quill CSS is imported
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import { useRouter } from "next/navigation";
+import { useDropzone } from "react-dropzone";
+import { useTheme } from "next-themes";
 
+// Dynamically import ReactQuill
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const modules = {
@@ -50,6 +53,7 @@ const formats = [
 ];
 
 const CreatePage = () => {
+  const { theme } = useTheme();
   const router = useRouter();
   const { toast } = useToast();
   const [img, setImage] = useState<{
@@ -75,15 +79,15 @@ const CreatePage = () => {
     setData({ ...data, desc: value });
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
     if (file) {
-      // Create a URL for the image
       const imgURL = URL.createObjectURL(file);
-      setImage({ file, imgURL }); // Update state with file and URL
+      setImage({ file, imgURL });
     }
-  };
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,7 +97,6 @@ const CreatePage = () => {
       const formData = new FormData();
       formData.append("title", data.title);
 
-      // Sanitize the description HTML content
       const sanitizedDesc = sanitizeHtml(data.desc, {
         allowedTags: [
           "p",
@@ -131,7 +134,6 @@ const CreatePage = () => {
           variant: "popup",
           title: "Post Created Successfully!",
         });
-        // Reset form data and files
         setData({
           title: "",
           desc: "",
@@ -163,17 +165,32 @@ const CreatePage = () => {
       className="p-4 pt-4 md:p-10 flex flex-col relative gap-4"
     >
       <p className="text-xl">Upload Image</p>
-      <label htmlFor="img">
-        <Image
-          src={img.imgURL || "/upl.png"}
-          height={70}
-          width={130}
-          alt="img upload"
-        />
-      </label>
-      <input onChange={handleImageChange} type="file" id="img" hidden />
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed p-4 cursor-pointer ${
+          isDragActive ? "border-green-400" : "border-gray-400"
+        }`}
+      >
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <p className="text-green-400">Drop the files here ...</p>
+        ) : (
+          <p>Drag & drop an image here, or click to select one</p>
+        )}
+      </div>
+      {img.imgURL && (
+        <div className="mt-4">
+          <Image
+            src={img.imgURL}
+            height={70}
+            width={130}
+            alt="img upload"
+            className="rounded"
+          />
+        </div>
+      )}
 
-      <h1 className="md:text-3xl font-bold text-lg">Create Post</h1>
+      <h1 className="md:text-3xl font-bold text-lg mt-4">Create Post</h1>
       <input
         type="text"
         name="title"
@@ -194,12 +211,17 @@ const CreatePage = () => {
       <ReactQuill
         value={data.desc}
         onChange={onDescChange}
-        className="w-full sm:w-[500px] mt-4 px-4 py-3 border"
+        className={`w-full mt-4 outline-none rounded ${
+          theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+        }`}
         placeholder="Write Content Here..."
         modules={modules}
         formats={formats}
+        theme="snow"
       />
-      <Button variant="custom">{loading ? "Posting..." : "Post"}</Button>
+      <Button variant="custom" className="mt-4 bg-green-700 text-white/75 ">
+        {loading ? "Posting..." : "Post"}
+      </Button>
     </form>
   );
 };

@@ -21,9 +21,9 @@ const PostCard: React.FC<{ post: any }> = React.memo(({ post }) => {
   const truncatedDescription = truncateText(strippedDescription, 100);
 
   // Add a version or timestamp to the author image URL
-  const authorImgUrl = post.authorImg
-    ? `${post.authorImg}?v=${Date.now()}`
-    : "/user.jpg";
+  // const authorImgUrl = post.authorImg
+  //   ? `${post.authorImg}?v=${Date.now()}`
+  //   : "/user.jpg";
 
   return (
     <div className="flex flex-col items-center py-3 px-4 glass-effect border-gray-700 border justify-center md:py-4 hover:opacity-85 shadow-xl transition-all ease-in-out duration-300 hover:translate-y-1 rounded-xl gap-4">
@@ -54,7 +54,7 @@ const PostCard: React.FC<{ post: any }> = React.memo(({ post }) => {
         <div className="flex items-center gap-2 md:gap-[0.65rem]">
           <div className="h-10 w-10 relative">
             <Image
-              src={authorImgUrl}
+              src={post.authorImg || "/user.jpg"}
               fill
               objectFit="cover"
               objectPosition="center"

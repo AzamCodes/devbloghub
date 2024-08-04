@@ -14,7 +14,7 @@ const Footer = () => {
 
   return (
     <footer
-      className={`py-4 mt-8 ${
+      className={`py-4 ${
         currentTheme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
     >

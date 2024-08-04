@@ -99,7 +99,7 @@ const SingleBlogPost = async ({ params }: PageProps) => {
             <div className="h-10 w-10 relative">
               {post.authorImg ? (
                 <Image
-                  src={post.authorImg}
+                  src={post.authorImg || "/user.jpg"}
                   fill
                   objectFit="cover"
                   objectPosition="center"

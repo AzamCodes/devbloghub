@@ -23,29 +23,33 @@ export const POST = async (req: NextRequest) => {
       throw new Error("Image file is required and must be a file");
     }
 
+    // Get the public ID of the old image
+    const oldImageUrl = user.img;
+    const oldImagePublicId = oldImageUrl
+      ? oldImageUrl.split("/").slice(-2).join("/").split(".")[0]
+      : null;
+
+    console.log("Old Image URL:", oldImageUrl);
+    console.log("Old Image Public ID:", oldImagePublicId);
+
+    // Validate image with sharp
     const imageBuffer = Buffer.from(await img.arrayBuffer());
+    const { width, height } = await sharp(imageBuffer).metadata();
 
-    // Determine the image format
-    const imageFormat = img.type.split("/")[1]; // Extract format (e.g., jpeg, gif)
-
-    // Compress and convert image using sharp if needed
-    let processedImageBuffer: Buffer;
-
-    if (imageFormat === "gif") {
-      // No processing for GIFs
-      processedImageBuffer = imageBuffer;
-    } else {
-      // Process non-GIF images
-      processedImageBuffer = await sharp(imageBuffer)
-        .resize({ width: 800, height: 600, fit: "cover" }) // Resize to minimum dimensions
-        .toFormat("jpeg", { quality: 80 }) // Convert to JPEG format and compress
-        .toBuffer();
+    if (width === undefined || height === undefined) {
+      throw new Error("Failed to retrieve image metadata");
     }
 
-    if (processedImageBuffer.length > 5 * 1024 * 1024) {
-      // 5MB
-      throw new Error("Image size should not exceed 5MB.");
+    // Resize image to 110x110 pixels (Instagram profile image dimensions)
+    if (width < 110 || height < 110) {
+      throw new Error("Image dimensions should be at least 110x110 pixels.");
     }
+
+    // Compress and convert image using sharp
+    const processedImageBuffer = await sharp(imageBuffer)
+      .resize({ width: 110, height: 110, fit: "cover" }) // Resize to 110x110 pixels
+      .toFormat("jpeg", { quality: 80 }) // Convert to JPEG format and compress
+      .toBuffer();
 
     // Upload image to Cloudinary
     const imageStream = new Readable();
@@ -63,16 +67,27 @@ export const POST = async (req: NextRequest) => {
       imageStream.pipe(uploadStream);
     });
 
-    // console.log("Cloudinary Response:", cloudinaryResponse);
-
     const imgUrl = cloudinaryResponse.secure_url;
-    // console.log("Profile Image URL:", imgUrl);
+    console.log("Uploaded Image URL:", imgUrl);
+
+    // If there was an old image, delete it from Cloudinary
+    if (oldImagePublicId) {
+      try {
+        const deletionResponse = await cloudinary.uploader.destroy(
+          oldImagePublicId,
+          {
+            resource_type: "image",
+          }
+        );
+        console.log("Cloudinary Deletion Response:", deletionResponse);
+      } catch (error) {
+        console.error("Error deleting old image from Cloudinary:", error);
+      }
+    }
 
     // Update user profile with new image URL
     user.img = imgUrl;
     await user.save();
-
-    // console.log("Updated User Document:", user);
 
     return NextResponse.json({
       imgUrl,

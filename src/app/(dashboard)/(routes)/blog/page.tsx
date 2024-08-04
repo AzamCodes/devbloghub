@@ -5,7 +5,7 @@ import axios from "axios";
 import { Post } from "@/helpers/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import SearchBar from "../../_components/SearchBar";
-import Head from "next/head";
+import { useTheme } from "next-themes";
 
 const getData = async (
   page: number,
@@ -77,13 +77,9 @@ const BlogPage: React.FC = () => {
   }, [handleScroll]);
 
   return (
-    <div>
-      {/* <Head>
-        <title>DEVBLOG | BLOG</title>
-        <meta name="description" content="Browse blogs on Devblog." />
-      </Head> */}
+    <div className="bg-background text-foreground">
       <SearchBar onSearch={handleSearch} />
-      <div className="px-3 md:px-3 py-10 md:p-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="px-3 dark md:px-3 py-10 md:p-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
           <PostCard key={post._id} post={post} />
         ))}

@@ -111,10 +111,10 @@
   border-radius: 0.35rem;
   outline: none;
 }
-
+/* 
 .ql-toolbar.ql-snow .ql-formats {
   margin-right: 15px;
-}
+} */
 
 .ql-container {
   border-radius: 0.45rem;
@@ -144,4 +144,33 @@
   100% {
     transform: rotate(360deg);
   }
+}
+/* Default text color */
+.ql-toolbar.ql-snow .ql-formats .ql-button {
+  color: #4a5568; /* Default text color */
+}
+
+/* Change text color on hover */
+.ql-toolbar.ql-snow .ql-formats .ql-button:hover {
+  color: #48bb78 !important; /* Change text color on hover */
+}
+
+/* Adjustments for dark mode */
+.ql-toolbar.ql-snow .ql-formats .ql-button {
+  color: #edf2f7; /* Default text color in dark mode */
+}
+
+.ql-toolbar.ql-snow .ql-formats .ql-button:hover {
+  color: #48bb78 !important; /* Change text color on hover in dark mode */
+}
+/* Custom Quill editor styles for light and dark themes */
+
+.ql-editor.ql-blank::before {
+  /* Placeholder color for light theme */
+  color: #a0aec0; /* Adjust this color as needed for light mode */
+}
+
+.dark .ql-editor.ql-blank::before {
+  /* Placeholder color for dark theme */
+  color: #4a5568; /* Adjust this color as needed for dark mode */
 }

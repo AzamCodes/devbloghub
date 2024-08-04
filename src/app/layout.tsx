@@ -31,7 +31,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="max-w-[1536px] ml-auto mr-auto"
+      className="dark max-w-[1536px] ml-auto mr-auto"
     >
       <Head>
         <link rel="manifest" href="/manifest.json" />

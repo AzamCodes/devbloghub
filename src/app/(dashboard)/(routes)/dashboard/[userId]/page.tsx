@@ -8,6 +8,20 @@ import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import DOMPurify from "dompurify";
 
+// Helper function to strip HTML tags
+const stripHtmlTags = (html: string) => {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+};
+
+// Helper function to truncate text
+const truncateText = (text: string, length: number) => {
+  if (text.length <= length) return text;
+  return text.slice(0, length) + "...";
+};
+
+// Interface for the Post object
 interface Post {
   _id: string;
   title: string;
@@ -65,12 +79,6 @@ const DashPage: React.FC = () => {
     return new Date(date).toLocaleDateString(undefined, options);
   };
 
-  const getShortDescription = (desc: string) => {
-    const maxLength = 150;
-    if (desc.length <= maxLength) return desc;
-    return desc.slice(0, maxLength) + "...";
-  };
-
   const handleDelete = async (postId: string) => {
     try {
       const response = await axios.delete(`/api/post`, {
@@ -119,7 +127,9 @@ const DashPage: React.FC = () => {
             <div
               className="mt-2 text-gray-600 md:max-h-6xl text-ellipsis truncate"
               dangerouslySetInnerHTML={{
-                __html: sanitizeHTML(getShortDescription(post.desc)),
+                __html: sanitizeHTML(
+                  truncateText(stripHtmlTags(post.desc), 150)
+                ),
               }}
             ></div>
             <Link
