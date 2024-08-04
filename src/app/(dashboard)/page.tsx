@@ -54,7 +54,10 @@ const HomePage: React.FC = () => {
         <p className="mt-4 text-lg md:text-xl">
           Create, share, and explore amazing blogs!
         </p>
-        <button className="group relative h-12 w-48 overflow-hidden rounded-lg mt-8 bg-white text-base md:text-lg shadow">
+        <button
+          onClick={handleStartBloggingClick}
+          className="group relative h-12 w-48 overflow-hidden rounded-lg mt-8 bg-white text-base md:text-lg shadow"
+        >
           <div className="absolute inset-0 w-3 bg-green-400 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
           <span className="relative text-black group-hover:text-white">
             Start Your Blog
