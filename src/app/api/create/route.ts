@@ -5,6 +5,7 @@ import Post from "@/models/PostModel";
 import User from "@/models/UserModel";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 import sharp from "sharp";
+import Filter from "bad-words";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -18,8 +19,10 @@ export const POST = async (req: NextRequest) => {
 
     // Get form data
     const formData = await req.formData();
+    const title = formData.get("title") as string;
+    const desc = formData.get("desc") as string;
     const img = formData.get("img");
-    const slug = formData.get("slug") as string; // Ensure slug is a string
+    const slug = formData.get("slug") as string;
 
     if (!img || !(img instanceof File)) {
       throw new Error("Image file is required and must be a file");
@@ -39,7 +42,6 @@ export const POST = async (req: NextRequest) => {
     }
 
     if (imageBuffer.length > 5 * 1024 * 1024) {
-      // 5MB
       throw new Error("Image size should not exceed 5MB.");
     }
 
@@ -61,10 +63,15 @@ export const POST = async (req: NextRequest) => {
 
     const imgUrl = cloudinaryResponse.secure_url;
 
+    // Filter vulgar language
+    const filter = new Filter();
+    const cleanTitle = filter.clean(title);
+    const cleanDesc = filter.clean(desc);
+
     // Save post details
     const blogData = {
-      title: formData.get("title") as string, // Ensure title is a string
-      desc: formData.get("desc") as string, // Ensure desc is a string
+      title: cleanTitle,
+      desc: cleanDesc,
       userId: user._id,
       slug,
       img: imgUrl,
@@ -81,7 +88,7 @@ export const POST = async (req: NextRequest) => {
       post: newPost,
     });
   } catch (error: any) {
-    console.error("Error creating post:", error);
+    console.error("Error creating post:", error.message || "An error occurred");
     return NextResponse.json(
       { success: false, message: error.message || "An error occurred" },
       { status: 500 }
