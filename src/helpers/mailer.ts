@@ -72,7 +72,7 @@ Click the button below to verify your email <br>
 To ensure the security of your account, please choose a strong password that is unique to this account and not used for any other online services.<br>This link will expire in 24 hours. If you don't reset your password within 24 hours, you will need to request a new reset link<br>Thanks,<br>
             or copy and paste the link below in your browser. <br> ${
               process.env.API_URL
-            }/forgotPassword?token=${hashedToken}
+            }/emailforgotpass?token=${hashedToken}
             </p>`,
     };
 
