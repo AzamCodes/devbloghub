@@ -62,7 +62,7 @@ Click the button below to verify your email <br>
 
 <a href="${
               process.env.API_URL
-            }/forgotPassword?token=${hashedToken}">RESET PASSWORD</a> to ${
+            }/emailforgotpass?token=${hashedToken}">RESET PASSWORD</a> to ${
               emailType === "RESET"
                 ? "RESET YOUR PASSWORD"
                 : "Verify Your Email"
