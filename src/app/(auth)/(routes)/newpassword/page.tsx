@@ -1,3 +1,5 @@
+// src/app/new-password/page.tsx
+
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +21,6 @@ const NewPassword = () => {
   const router = useRouter();
   const [token, setToken] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-
   const [loading, setLoading] = useState(false);
 
   type Inputs = z.infer<typeof forgotPasswordSchema>;
@@ -36,22 +37,25 @@ const NewPassword = () => {
 
   const newPass: SubmitHandler<Inputs> = async (data) => {
     try {
-      // console.log(data);
+      setLoading(true);
       const response = await axios.post("/api/users/forgotPass", {
         data,
       });
-      // console.log(token);
-      // console.log(response.data);
       reset();
       toast({
         variant: "popup",
-        title: "Password Update Successfully",
-
-        description: "Login with your Update Password",
+        title: "Password Updated Successfully",
+        description: "Login with your updated password",
       });
       router.push("/login");
     } catch (error: any) {
-      // console.log(error.message);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Something went wrong.",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,24 +79,23 @@ const NewPassword = () => {
         objectFit="cover"
       />
       <form onSubmit={handleSubmit(newPass)}>
-        <div className="flex justify-center px-4 py-32 md:py-32 selection:bg-black selection:text-green-500 ">
-          {" "}
-          <Card className="w-full md:w-[40%] min-h-full shadow-2xl  md:min-h-[45vh] bg-black/5  rounded-xl backdrop-blur-[100px]   border-none ">
+        <div className="flex justify-center px-4 py-32 md:py-32 selection:bg-black selection:text-green-500">
+          <Card className="w-full md:w-[40%] min-h-full shadow-2xl md:min-h-[45vh] bg-black/5 rounded-xl backdrop-blur-[100px] border-none">
             <CardHeader>
               <CardTitle className="text-green-500 text-2xl">
-                {loading ? "Processing" : "SetUp New Password"}{" "}
+                {loading ? "Processing" : "SetUp New Password"}
               </CardTitle>
             </CardHeader>
-            <CardContent className=" flex justify-center flex-col gap-2">
+            <CardContent className="flex justify-center flex-col gap-2">
               <div className="items-center relative">
                 <Label htmlFor="password">New Password</Label>
                 <Input
-                  className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px]  border-green-700"
+                  className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px] border-green-700"
                   type={passwordVisible ? "text" : "password"}
                   id="password"
                   {...register("pass", { required: true })}
                   placeholder="Enter New Password"
-                />{" "}
+                />
                 <span
                   className="absolute right-2 top-[2.1rem] items-center cursor-pointer"
                   onClick={togglePasswordVisibility}
@@ -106,7 +109,7 @@ const NewPassword = () => {
               <div className="items-center relative">
                 <Label htmlFor="password">Confirm Password</Label>
                 <Input
-                  className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px]  border-green-700"
+                  className="bg-inherit focus:ring-green-600 outline-none placeholder:text-green-300 focus:border-green-600 border-[1.1px] border-green-700"
                   type={passwordVisible ? "text" : "password"}
                   id="password"
                   {...register("confirmp", { required: true })}

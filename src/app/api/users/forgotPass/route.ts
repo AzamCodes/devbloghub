@@ -1,3 +1,5 @@
+// src/app/api/users/forgotPass/route.ts
+
 import { connect } from "@/dbConfig/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
@@ -8,55 +10,36 @@ connect();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    // console.log("This is Request BiBody", reqBody);
-    const token = reqBody.data.token;
-    const pass = reqBody.data.pass;
-    const confirmp = reqBody.data.confirmp;
-    // Validate required fields
-    // console.log(pass);
-    // console.log(token);
-    // console.log(confirmp);
+    const { token, pass, confirmp } = reqBody.data;
 
     if (!token || !pass || !confirmp) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 500 }
+        { status: 400 }
       );
     }
-    // console.log("this is token", token);
-    // Find user with valid token and unexpired expiry
+
     const user = await User.findOne({
       forgotPasswordToken: token,
-      forgotPasswordTokenExpiry: { $gt: Date.now() }, // Ensure unexpired token
+      forgotPasswordTokenExpiry: { $gt: Date.now() },
     });
-    // console.log(user);
-    // Access user properties only after checking for existence
-    // const userToken = user.forgotPasswordToken; // Example usage
 
     if (!user) {
       return NextResponse.json(
         { error: "Invalid or expired token" },
         { status: 400 }
-      ); // Improved error message
+      );
     }
-    // console.log(user);
-    // const salt = await bcryptjs.genSalt(10);
 
-    const hashPass = await bcryptjs.hash(pass, 10);
-    // console.log("hashpass", hashPass);
-
-    const rp = await bcryptjs.compare(pass, hashPass);
-
-    // console.log(rp);
-
-    if (!rp) {
+    if (pass !== confirmp) {
       return NextResponse.json(
-        { error: "Passwords Do Not Match" },
+        { error: "Passwords do not match" },
         { status: 400 }
       );
     }
 
-    // console.log("this is hash", hashPass);
+    const hashPass = await bcryptjs.hash(pass, 10);
+
     user.forgotPasswordToken = undefined;
     user.forgotPasswordTokenExpiry = undefined;
     user.password = hashPass;
@@ -64,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Password Update Successfully",
+        message: "Password updated successfully",
       },
       { status: 200 }
     );
@@ -73,7 +56,6 @@ export async function POST(request: NextRequest) {
       {
         message: error.message,
       },
-
       { status: 500 }
     );
   }
