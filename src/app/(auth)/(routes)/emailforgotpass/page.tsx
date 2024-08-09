@@ -47,7 +47,7 @@ const EmailforgotPass = () => {
   const shootmail: SubmitHandler<Inputs> = async (email) => {
     try {
       // console.log(email);
-      const response = await axios.post("/api/users/Emailforgotpass", {
+      const response = await axios.post("/api/users/emailforgotpass", {
         email,
       });
       reset();
