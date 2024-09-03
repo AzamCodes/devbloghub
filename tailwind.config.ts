@@ -1,5 +1,8 @@
 import type { Config } from "tailwindcss";
 
+// Define the type for the `theme` function if it's not directly available
+type ThemeFunction = (key: string) => string;
+
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -58,7 +61,7 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      typography: (theme) => ({
+      typography: (theme: ThemeFunction) => ({
         DEFAULT: {
           css: {
             color: theme("colors.foreground"),
