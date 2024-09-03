@@ -44,22 +44,33 @@ const EmailforgotPass = () => {
     resolver: zodResolver(SendEmailForgotpassSchema),
   });
 
-  const shootmail: SubmitHandler<Inputs> = async (email) => {
+  const shootmail: SubmitHandler<Inputs> = async (data) => {
+    const { email } = data; // Extract the email properly
     try {
-      // console.log(email);
       const response = await axios.post("/api/users/emailforgotpass", {
         email,
       });
       reset();
       toast({
         variant: "popup",
-        title: "Email Send Successfully",
-
-        description: "Check Email to Setup a New Password",
+        title: "Email Sent Successfully",
+        description: "Check your email to set up a new password.",
       });
-      // console.log("Shoot mail success", response.data);
     } catch (error: any) {
-      // console.log(error.message);
+      if (error.response && error.response.status === 404) {
+        // Display toast for unregistered email
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Email not registered. Please enter a valid email.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "An unexpected error occurred. Please try again.",
+        });
+      }
     }
   };
 

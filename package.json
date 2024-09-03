@@ -18,6 +18,7 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
+    "@tailwindcss/typography": "^0.5.15",
     "@tensorflow/tfjs-node": "^4.20.0",
     "axios": "^1.7.2",
     "bad-words": "^3.0.4",

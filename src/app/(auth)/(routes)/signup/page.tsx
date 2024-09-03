@@ -49,24 +49,23 @@ const SignUpPage = () => {
   const onSignUp: SubmitHandler<Inputs> = async (data) => {
     try {
       setLoading(true);
-      // console.log(data);
       const response = await axios.post("/api/users/signup", data);
-      // console.log("SignUp Success", response.data);
       reset();
       toast({
         variant: "popup",
-        title: "SignUp Successfully",
-
-        description: "Check Email for Verification",
+        title: "Sign-Up Successful",
+        description: "Please check your email for verification.",
       });
       router.push("/login");
     } catch (error: any) {
-      // console.log("SignUp Failed!", error.message);
+      // Extract error message from the response
+      const errorMessage =
+        error.response?.data?.error ||
+        "An unexpected error occurred. Please try again.";
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: error.message,
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+        title: "Sign-Up Failed",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);

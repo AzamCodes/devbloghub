@@ -15,7 +15,7 @@ interface PostContentProps {
 const PostContent: React.FC<PostContentProps> = ({ content }) => {
   return (
     <div
-      className="post-content"
+      className="prose prose-invert max-w-none" // Added Tailwind Typography class for better styling
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );

@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     console.log("This is reqbody", reqBody);
 
-    const { email } = reqBody.email;
+    const { email } = reqBody;
     console.log(email); // Extract email from request body
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -22,10 +22,13 @@ export async function POST(request: NextRequest) {
     console.log("Found user:", user);
 
     if (!user) {
-      return NextResponse.json({ error: "User Not Found" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User Not Found. Please enter a valid registered email." },
+        { status: 404 }
+      );
     }
 
-    sendEmail({ email, emailType: "RESET", userId: user._id });
+    await sendEmail({ email, emailType: "RESET", userId: user._id });
 
     return NextResponse.json({
       message: "Email for Forgot Password Sent successfully",
@@ -33,7 +36,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error("Error sending reset email:", error);
-    // Consider a more descriptive error message for the user based on error type
     return NextResponse.json(
       { message: "An error occurred." },
       { status: 500 }
