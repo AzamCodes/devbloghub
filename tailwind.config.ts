@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
+import type { Theme } from "tailwindcss/types/config";
 
-const config = {
+const config: Config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -58,7 +59,7 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      typography: (theme) => ({
+      typography: (theme: Theme) => ({
         DEFAULT: {
           css: {
             color: theme("colors.foreground"),
@@ -186,6 +187,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
-} satisfies Config;
+};
 
 export default config;
