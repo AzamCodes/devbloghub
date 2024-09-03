@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import type { Theme } from "tailwindcss/types/config";
 
 const config: Config = {
   darkMode: ["class"],
@@ -59,7 +58,7 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      typography: (theme: Theme) => ({
+      typography: (theme) => ({
         DEFAULT: {
           css: {
             color: theme("colors.foreground"),
