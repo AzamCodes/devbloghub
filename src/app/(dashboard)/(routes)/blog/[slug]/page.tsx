@@ -99,7 +99,7 @@ const SingleBlogPost = async ({ params }: PageProps) => {
             <div className="h-10 w-10 relative">
               {post.authorImg ? (
                 <Image
-                  src={post.authorImg || "/user.jpg"}
+                  src={post.authorImg || "/user.jpg"} // Corrected path
                   fill
                   objectFit="cover"
                   objectPosition="center"
@@ -107,9 +107,17 @@ const SingleBlogPost = async ({ params }: PageProps) => {
                   className="rounded-full"
                 />
               ) : (
-                <Skeleton className="h-10 w-10 rounded-full" /> // Author image skeleton
+                <Image // Use Image component for default image
+                  src="/user.jpg"
+                  fill
+                  objectFit="cover"
+                  objectPosition="center"
+                  alt="default user profile"
+                  className="rounded-full"
+                />
               )}
             </div>
+
             <div className="flex flex-col">
               <span className="text-xs md:text-sm text-gray-400">Author</span>
               <span className="text-sm md:text-base">

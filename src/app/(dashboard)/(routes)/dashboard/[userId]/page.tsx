@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
-import { MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import DOMPurify from "dompurify";
@@ -116,13 +116,23 @@ const DashPage: React.FC = () => {
           <div className="w-full md:flex-1 text-ellipse truncate relative">
             <div className="flex justify-between items-start">
               <h2 className="text-xl font-semibold">{post.title}</h2>
-              <button
-                type="button"
-                className="ml-2 md:absolute md:right-3 md:top-3 border-none hover:text-green-400 transition-all outline-none bg-transparent"
-                onClick={() => handleDelete(post._id)}
-              >
-                <MdDeleteOutline size={24} />
-              </button>
+              <div className="flex space-x-2 items-center">
+                <button
+                  type="button"
+                  className="border-none hover:text-green-400 transition-all outline-none bg-transparent"
+                  onClick={() => handleDelete(post._id)}
+                >
+                  <MdDeleteOutline size={24} />
+                </button>
+                <button>
+                  <Link href={`/edit/${post.slug}`}>
+                    <MdEdit
+                      size={24}
+                      className="hover:text-green-400 transition-all outline-none bg-transparent"
+                    />
+                  </Link>
+                </button>
+              </div>
             </div>
             <div
               className="mt-2 text-gray-600 md:max-h-6xl text-ellipsis truncate"
