@@ -1,11 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "@/utils/cloudinaryConfig";
-import { Readable } from "stream";
-import sharp from "sharp";
-import Post from "@/models/PostModel";
-import { getDataFromToken } from "@/helpers/getDataFromToken";
-import Filter from "bad-words";
-
 export const PUT = async (req: NextRequest) => {
   try {
     const userId = await getDataFromToken(req);
@@ -81,8 +73,10 @@ export const PUT = async (req: NextRequest) => {
       message: "Post updated successfully.",
       userId,
     });
-  } catch (error) {
-    console.error("Error updating post:", error.message);
-    return NextResponse.json({ success: false, message: error.message });
+  } catch (error: unknown) {
+    // Typecast error to Error
+    const errorMessage = (error as Error).message || "An error occurred";
+    console.error("Error updating post:", errorMessage);
+    return NextResponse.json({ success: false, message: errorMessage });
   }
 };
