@@ -1,3 +1,11 @@
+import { NextRequest, NextResponse } from "next/server"; // Correct import
+import cloudinary from "@/utils/cloudinaryConfig";
+import { Readable } from "stream";
+import sharp from "sharp";
+import Post from "@/models/PostModel";
+import { getDataFromToken } from "@/helpers/getDataFromToken";
+import Filter from "bad-words";
+
 export const PUT = async (req: NextRequest) => {
   try {
     const userId = await getDataFromToken(req);
