@@ -12,7 +12,7 @@ const Profile: React.FC = () => {
   const router = useRouter();
   const { user, setUser, setIsLoggedIn, fetchUserDetails } = useUser();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(user?.email || "");
   const [img, setImage] = useState<File | null>(null);
   const [imgPreview, setImgPreview] = useState<string | null>(null);
 
@@ -27,13 +27,36 @@ const Profile: React.FC = () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      if (img) formData.append("img", img);
-      if (email) formData.append("email", email);
+
+      let message = "Profile updated successfully"; // Default success message
+
+      // Only append if there are changes
+      if (img) {
+        formData.append("img", img);
+        message = "Profile photo updated successfully"; // Specific success message for photo update
+      }
+      if (email && email !== user?.email) {
+        formData.append("email", email);
+        message = "Email updated successfully"; // Specific success message for email update
+      }
+
+      // Ensure at least one field is being updated
+      if (!img && (!email || email === user?.email)) {
+        toast({
+          variant: "destructive",
+          title: "No changes detected.",
+          description: "Please update your email or profile photo.",
+        });
+        setLoading(false);
+        return;
+      }
+
       const response = await axios.post("/api/profile", formData);
+
       if (response.data.success) {
         toast({
           variant: "popup",
-          title: "User Profile Updated Successfully!",
+          title: message,
         });
         setImage(null);
         setImgPreview(null);
@@ -100,7 +123,7 @@ const Profile: React.FC = () => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: handleDrop,
     accept: {
-      "image/*": [], // Correct format for accept
+      "image/*": [],
     },
   });
 
@@ -142,7 +165,7 @@ const Profile: React.FC = () => {
       </h2>
       <div
         {...getRootProps()}
-        className="flex flex-col items-center border-dashed border-2 border-gray-300 p-4 rounded-md cursor-pointer relative overflow-hidden"
+        className="flex flex-col items-center border-dashed border-2 mb-4 border-gray-300 p-4 rounded-md cursor-pointer relative overflow-hidden"
       >
         <input
           {...getInputProps()}
@@ -162,25 +185,39 @@ const Profile: React.FC = () => {
           </p>
         )}
       </div>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-4">
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border-[0.5px] focus:border-green-500 outline-none p-2 mt-2"
-        />
-        <Button type="submit" variant={"outline"} className="mt-2">
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label
+            htmlFor="email"
+            className="block text-sm md:text-lg font-medium text-gray-400"
+          >
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mt-1 px-3 py-2 border rounded-md w-full"
+            required
+          />
+        </div>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-600 w-full"
+        >
           {loading ? "Updating..." : "Update Profile"}
         </Button>
+      </form>
+      <div className="mt-4">
         <Button
-          type="button"
           onClick={logout}
-          variant={"outline"}
-          className="mt-2"
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-600 w-full"
         >
           Logout
         </Button>
-      </form>
+      </div>
     </div>
   );
 };

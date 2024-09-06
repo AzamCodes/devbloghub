@@ -115,7 +115,9 @@ const DashPage: React.FC = () => {
           />
           <div className="w-full md:flex-1 text-ellipse truncate relative">
             <div className="flex justify-between items-start">
-              <h2 className="text-xl font-semibold">{post.title}</h2>
+              <h2 className="text-xl font-semibold truncate text-ellipse">
+                {post.title}
+              </h2>
               <div className="flex space-x-2 items-center">
                 <button
                   type="button"
