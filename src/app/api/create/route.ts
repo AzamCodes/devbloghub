@@ -1,3 +1,12 @@
+import { NextRequest, NextResponse } from "next/server"; // Correct import
+import cloudinary from "@/utils/cloudinaryConfig";
+import { Readable } from "stream";
+import sharp from "sharp";
+import Post from "@/models/PostModel";
+import User from "@/models/UserModel";
+import { getDataFromToken } from "@/helpers/getDataFromToken";
+import Filter from "bad-words";
+
 export const POST = async (req: NextRequest) => {
   try {
     const userId = await getDataFromToken(req);
@@ -25,7 +34,18 @@ export const POST = async (req: NextRequest) => {
       throw new Error("Image size should not exceed 5MB.");
 
     const imageStream = Readable.from(imageBuffer);
-    const cloudinaryResponse = await retryCloudinaryUpload(imageStream);
+
+    // Upload image to Cloudinary
+    const cloudinaryResponse = await new Promise<any>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "blog_posts", quality: "auto", fetch_format: "auto" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+      imageStream.pipe(uploadStream);
+    });
 
     const filter = new Filter();
     const cleanTitle = filter.clean(title);
