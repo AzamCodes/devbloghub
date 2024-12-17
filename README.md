@@ -2,6 +2,10 @@
 
 Welcome to **DevBlog**, a modern blogging platform built for developers to share tutorials, stories, and technical expertise. This project is designed to foster collaboration and provide a seamless blogging experience with features tailored specifically for tech enthusiasts.
 
+🌟 Demo Video
+🎥 See DevBlogHub in Action!
+[!DevBlogHub](https://github.com/user-attachments/assets/bbb2cb5d-4567-43b8-9857-9bbe153dd361)
+
 ## 🌟 Features
 
 ### User Experience
