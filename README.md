@@ -251,9 +251,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## 📧 Contact
 
 Feel free to reach out with questions, suggestions, or feedback:
-- **Email:** your-email@example.com
-- **LinkedIn:** [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- **GitHub:** [Your GitHub Profile](https://github.com/your-username)
+- **Email:** azamcodes@example.com
+- **LinkedIn:** [Your LinkedIn Profile](https://linkedin.com/in/azamdev)
+- **GitHub:** [Your GitHub Profile](https://github.com/AzamCodes)
 
 ---
 
