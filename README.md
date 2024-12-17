@@ -5,7 +5,7 @@ Welcome to **DevBlog**, a modern blogging platform built for developers to share
 🌟 Demo Video
 🎥 See DevBlogHub in Action!
 
-<video src="https://github.com/yourusername/yourrepo/raw/main/assets/demo.mp4" controls="controls" style="max-width: 100%; height: auto;">
+<video src="https://github.com/user-attachments/assets/bbb2cb5d-4567-43b8-9857-9bbe153dd361" controls="controls" style="max-width: 100%; height: auto;">
   Your browser does not support the video tag.
 </video>
 
