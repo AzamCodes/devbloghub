@@ -4,7 +4,7 @@ Welcome to **DevBlog**, a modern blogging platform built for developers to share
 
 🌟 Demo Video
 🎥 See DevBlogHub in Action!
-[!DevBlogHub](https://github.com/user-attachments/assets/bbb2cb5d-4567-43b8-9857-9bbe153dd361)
+https://github.com/user-attachments/assets/bbb2cb5d-4567-43b8-9857-9bbe153dd361
 
 ## 🌟 Features
 
@@ -256,8 +256,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 Feel free to reach out with questions, suggestions, or feedback:
 - **Email:** azamcodes@example.com
-- **LinkedIn:** [Your LinkedIn Profile](https://linkedin.com/in/azamdev)
-- **GitHub:** [Your GitHub Profile](https://github.com/AzamCodes)
+- **LinkedIn:** [Connect](https://linkedin.com/in/azamdev)
+- **GitHub:** [GitHub Profile](https://github.com/AzamCodes)
 
 ---
 
