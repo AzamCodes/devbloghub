@@ -44,7 +44,7 @@ const PostCard: React.FC<{ post: any }> = React.memo(({ post }) => {
           {truncatedDescription}
         </p>
         <Link
-          className="text-sm md:text-base hover:text-green-400 transition-all text-gray-300"
+          className="text-sm md:text-base hover:text-green-400 transition-all text-green-300"
           href={`/blog/${post.slug}`}
         >
           Read More
