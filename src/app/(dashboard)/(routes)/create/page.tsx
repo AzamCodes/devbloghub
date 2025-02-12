@@ -16,41 +16,34 @@ import { useTheme } from "next-themes";
 // Dynamically import ReactQuill
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const modules = {
+ const modules = {
   syntax: {
     highlight: (text: string) => hljs.highlightAuto(text).value,
   },
   toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [
-      { list: "ordered" },
-      { list: "bullet" },
-      { indent: "-1" },
-      { indent: "+1" },
-    ],
-    ["link"],
-    ["code-block"],
-    ["clean"],
+    [{ header: ['1', '2', '3', false] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['link', 'code-block'],
+    ['clean'],
   ],
 };
 
 const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "code-block",
+  'header',
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'blockquote',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+  'code-block',
 ];
+
+
 
 const CreatePage = () => {
   const { theme } = useTheme();
