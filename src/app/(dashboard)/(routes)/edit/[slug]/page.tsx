@@ -20,34 +20,26 @@ const modules = {
     highlight: (text: string) => hljs.highlightAuto(text).value,
   },
   toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [
-      { list: "ordered" },
-      { list: "bullet" },
-      { indent: "-1" },
-      { indent: "+1" },
-    ],
-    ["link"],
-    ["code-block"],
-    ["clean"],
+    [{ header: ['1', '2', '3', false] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['link', 'code-block'],
+    ['clean'],
   ],
 };
 
 const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "code-block",
+  'header',
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'blockquote',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+  'code-block',
 ];
 
 const EditPage: React.FC = () => {
@@ -111,20 +103,13 @@ const EditPage: React.FC = () => {
 
       const sanitizedDesc = sanitizeHtml(post.desc, {
         allowedTags: [
-          "p",
-          "a",
-          "b",
-          "i",
-          "u",
-          "strong",
-          "em",
-          "blockquote",
-          "code",
-          "pre",
+          "p", "a", "b", "i", "u", "strong", "em", 
+          "blockquote", "code", "pre", "h1", "h2", "h3",
+          "ul", "ol", "li"
         ],
         allowedAttributes: {
           a: ["href", "title", "target"],
-          "*": ["style"],
+          "*": ["style", "class"],
         },
         allowedSchemes: ["http", "https", "mailto", "tel"],
       });
@@ -132,9 +117,11 @@ const EditPage: React.FC = () => {
 
       if (img.file) {
         formData.append("img", img.file);
+      } else if (img.imgURL) {
+        formData.append("existingImg", img.imgURL);
       }
 
-      const response = await axios.put(`/api/post/${slug}`, formData, {
+      const response = await axios.put(`/api/blog/${slug}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
