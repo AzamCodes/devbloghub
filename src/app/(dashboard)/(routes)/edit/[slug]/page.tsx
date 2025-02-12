@@ -121,7 +121,9 @@ const EditPage: React.FC = () => {
         formData.append("existingImg", img.imgURL);
       }
 
-      const response = await axios.put(`/api/blog/${slug}`, formData, {
+      const encodedSlug = encodeURIComponent(slug as string);
+      
+      const response = await axios.put(`/api/blog/${encodedSlug}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
