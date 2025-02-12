@@ -22,7 +22,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
   },
   toolbar: [
     [{ header: ['1', '2', '3', false] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    ['bold', 'italic', 'underline', 'blockquote'],
     [{ list: 'ordered' }, { list: 'bullet' }],
     ['link', 'code-block'],
     ['clean'],
@@ -34,7 +34,6 @@ const formats = [
   'bold',
   'italic',
   'underline',
-  'strike',
   'blockquote',
   'list',
   'bullet',
