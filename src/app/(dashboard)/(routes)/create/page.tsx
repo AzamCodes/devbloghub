@@ -30,19 +30,17 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 };
 
 const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "code-block",
+  'header',
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'blockquote',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+  'code-block'
 ];
 
 const CreatePage = () => {
@@ -119,16 +117,9 @@ const CreatePage = () => {
 
       const sanitizedDesc = sanitizeHtml(data.desc, {
         allowedTags: [
-          "p",
-          "a",
-          "b",
-          "i",
-          "u",
-          "strong",
-          "em",
-          "blockquote",
-          "code",
-          "pre",
+          "p", "a", "b", "i", "u", "strong", "em", 
+          "blockquote", "code", "pre", "h1", "h2", "h3",
+          "ul", "ol", "li"
         ],
         allowedAttributes: {
           a: ["href", "title", "target"],
