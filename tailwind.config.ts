@@ -94,12 +94,14 @@ const config: Config = {
               lineHeight: "1.75rem",
               marginBottom: "1rem",
             },
-            a: {
+          a: {
               color: theme("colors.primary.DEFAULT"),
               textDecoration: "underline",
               fontWeight: "500",
+              transition: "color 0.2s ease",
               "&:hover": {
-                color: theme("colors.primary.foreground"),
+                color: theme("colors.primary.DEFAULT"),
+                opacity: 0.8,
               },
             },
             ul: {
