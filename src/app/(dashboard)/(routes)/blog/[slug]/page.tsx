@@ -15,7 +15,13 @@ interface PostContentProps {
 const PostContent: React.FC<PostContentProps> = ({ content }) => {
   return (
     <div
-      className="prose prose-invert prose-headings:text-white prose-p:text-gray-300 prose-strong:text-white prose-blockquote:text-gray-300 prose-ul:text-gray-300 prose-ol:text-gray-300 max-w-none"
+      className="prose max-w-none
+        prose-headings:text-foreground
+        prose-p:text-muted-foreground
+        prose-strong:text-foreground
+        prose-blockquote:text-muted-foreground
+        prose-ul:text-muted-foreground
+        prose-ol:text-muted-foreground"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
