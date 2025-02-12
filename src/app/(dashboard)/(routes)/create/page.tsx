@@ -30,20 +30,20 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 };
 
 const formats = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'bullet',
-  'indent',
-  'link',
-  'code-block',
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "code-block",
 ];
-
-
 
 const CreatePage = () => {
   const { theme } = useTheme();
@@ -59,12 +59,29 @@ const CreatePage = () => {
     desc: "",
     slug: "",
   });
+  const [slugError, setSlugError] = useState("");
+
+  const validateSlug = (slug: string) => {
+    const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    return slugRegex.test(slug);
+  };
 
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const name = event.target.name;
     const value = event.target.value;
+    
+    if (name === "slug") {
+      if (!value) {
+        setSlugError("");
+      } else if (!validateSlug(value)) {
+        setSlugError("Slug must be lowercase, with no spaces. Use hyphens to separate words (e.g., my-blog-post)");
+      } else {
+        setSlugError("");
+      }
+    }
+    
     setData({ ...data, [name]: value });
   };
 
@@ -84,6 +101,16 @@ const CreatePage = () => {
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!validateSlug(data.slug)) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Slug Format",
+        description: "Please correct the slug format before submitting",
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -193,14 +220,22 @@ const CreatePage = () => {
         placeholder="Add Title"
         required
       />
-      <input
-        type="text"
-        name="slug"
-        onChange={onChangeHandler}
-        value={data.slug}
-        className="text-sm md:text-base px-2 md:px-3 border-none py-2 ring-1 ring-gray-600 focus:ring-1 focus:ring-green-600 outline-none rounded-sm"
-        placeholder="Add Slug"
-      />
+      <div className="flex flex-col gap-1">
+        <input
+          type="text"
+          name="slug"
+          onChange={onChangeHandler}
+          value={data.slug}
+          className={`text-sm md:text-base px-2 md:px-3 border-none py-2 ring-1 ${
+            slugError ? 'ring-red-500' : 'ring-gray-600'
+          } focus:ring-1 focus:ring-green-600 outline-none rounded-sm`}
+          placeholder="Add Slug (e.g., my-blog-post)"
+          required
+        />
+        {slugError && (
+          <p className="text-red-500 text-sm">{slugError}</p>
+        )}
+      </div>
       <ReactQuill
         value={data.desc}
         onChange={onDescChange}
