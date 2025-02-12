@@ -63,17 +63,36 @@ const EditPage: React.FC = () => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`/api/blog/${slug}`);
-        setPost(response.data);
-        setImage({ file: null, imgURL: response.data.img });
+        const postData = response.data;
+        
+        // Explicitly set all fields from the response
+        setPost({
+          title: postData.title || "",
+          desc: postData.desc || "",
+          slug: postData.slug || "",
+          img: postData.img || ""
+        });
+        
+        // Set image separately
+        setImage({ 
+          file: null, 
+          imgURL: postData.img || null 
+        });
+        
       } catch (error) {
         console.error("Error fetching post data:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch post data"
+        });
       }
     };
 
     if (slug) {
       fetchPost();
     }
-  }, [slug]);
+  }, [slug, toast]); // Added toast to dependencies
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPost({ ...post, [e.target.name]: e.target.value });
@@ -97,6 +116,28 @@ const EditPage: React.FC = () => {
     setLoading(true);
 
     try {
+      // Validate slug format
+      if (!post.slug.includes('-')) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Slug Format",
+          description: "Slug must contain hyphens. Example: 'my-blog-post'"
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Validate no spaces in slug
+      if (post.slug.includes(' ')) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Slug Format",
+          description: "Slug cannot contain spaces. Use hyphens instead."
+        });
+        setLoading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("title", post.title);
       formData.append("slug", post.slug);
@@ -121,9 +162,7 @@ const EditPage: React.FC = () => {
         formData.append("existingImg", img.imgURL);
       }
 
-      const encodedSlug = encodeURIComponent(slug as string);
-      
-      const response = await axios.put(`/api/blog/${encodedSlug}`, formData, {
+      const response = await axios.put(`/api/blog/${slug}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -193,15 +232,20 @@ const EditPage: React.FC = () => {
       />
 
       {/* Slug input */}
-      <input
-        type="text"
-        name="slug"
-        onChange={handleInputChange}
-        value={post.slug}
-        className="text-sm md:text-base px-2 md:px-3 border-none py-2 ring-1 ring-gray-600 focus:ring-1 focus:ring-green-600 outline-none rounded-sm"
-        placeholder="Add Slug"
-        required
-      />
+      <div className="flex flex-col gap-1">
+        <input
+          type="text"
+          name="slug"
+          onChange={handleInputChange}
+          value={post.slug}
+          className="text-sm md:text-base px-2 md:px-3 border-none py-2 ring-1 ring-gray-600 focus:ring-1 focus:ring-green-600 outline-none rounded-sm"
+          placeholder="Add Slug"
+          required
+        />
+        <p className="text-sm text-gray-500">
+          Use hyphens to separate words (e.g., my-blog-post)
+        </p>
+      </div>
 
       <ReactQuill
         value={post.desc}
